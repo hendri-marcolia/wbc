@@ -59,7 +59,8 @@ public class SetAccountDetailsInteractor extends CompletableInteractor<String> {
                                     toriiResponse.getTxStatus() == Endpoint.TxStatus.STATELESS_VALIDATION_SUCCESS ||
                                     toriiResponse.getTxStatus() == Endpoint.TxStatus.STATEFUL_VALIDATION_SUCCESS ||
                                     toriiResponse.getTxStatus() == Endpoint.TxStatus.ENOUGH_SIGNATURES_COLLECTED){
-                                emitter.onComplete();
+                                if (toriiResponse.getTxStatus() == Endpoint.TxStatus.COMMITTED )
+                                    emitter.onComplete();
                             }
                             else  emitter.onError(new RuntimeException("Transaction Failed , TxStatus = " + toriiResponse.getTxStatus()));
                 });
