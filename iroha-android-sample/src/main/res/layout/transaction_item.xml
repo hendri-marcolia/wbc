@@ -9,7 +9,7 @@
             type="jp.co.soramitsu.iroha.android.sample.main.history.TransactionVM" />
     </data>
 
-    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white">
@@ -59,5 +59,5 @@
             app:layout_constraintTop_toTopOf="@id/username"
             tools:text="+1000"
             tools:textColor="@color/positiveAmount" />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

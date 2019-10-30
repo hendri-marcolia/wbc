@@ -1,7 +1,7 @@
 package jp.co.soramitsu.iroha.android.sample;
 
 import android.app.Application;
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.VisibleForTesting;
 
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
@@ -12,14 +12,6 @@ import jp.co.soramitsu.iroha.android.sample.injection.DaggerApplicationComponent
 import lombok.Getter;
 
 public class SampleApplication extends Application {
-//    static {
-//        try {
-//            System.loadLibrary("irohajava");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-
     public static SampleApplication instance;
 
     public Account account;

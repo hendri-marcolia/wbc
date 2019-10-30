@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout">
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -60,7 +60,7 @@
                     android:text="@string/registration_subtitle"
                     android:textColor="@color/hint" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/username_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -78,9 +78,9 @@
                         android:singleLine="true"
                         tools:ignore="LabelFor" />
 
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.v7.widget.AppCompatButton
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/register_button"
                     android:layout_width="160dp"
                     android:layout_height="wrap_content"
@@ -93,5 +93,5 @@
             </LinearLayout>
 
         </FrameLayout>
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 </layout>

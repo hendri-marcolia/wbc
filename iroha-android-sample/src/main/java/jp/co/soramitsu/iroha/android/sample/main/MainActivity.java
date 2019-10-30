@@ -3,15 +3,15 @@ package jp.co.soramitsu.iroha.android.sample.main;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -33,9 +33,6 @@ import jp.co.soramitsu.iroha.android.sample.main.history.HistoryFragment;
 import jp.co.soramitsu.iroha.android.sample.main.receive.ReceiveFragment;
 import jp.co.soramitsu.iroha.android.sample.main.send.SendFragment;
 import jp.co.soramitsu.iroha.android.sample.registration.RegistrationActivity;
-
-import static jp.co.soramitsu.iroha.android.sample.Constants.PRIV_KEY;
-import static jp.co.soramitsu.iroha.android.sample.Constants.PUB_KEY;
 
 public class MainActivity extends AppCompatActivity implements MainView, SwipeRefreshLayout.OnRefreshListener {
 

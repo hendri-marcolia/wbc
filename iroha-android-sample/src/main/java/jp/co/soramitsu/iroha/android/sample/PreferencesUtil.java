@@ -2,7 +2,7 @@ package jp.co.soramitsu.iroha.android.sample;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.VisibleForTesting;
 
 import java.security.KeyPair;
 import java.security.PrivateKey;

@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/iroha-android-master.iml" filepath="$PROJECT_DIR$/iroha-android-master.iml" />
       <module fileurl="file://$PROJECT_DIR$/iroha-android-sample/iroha-android-sample.iml" filepath="$PROJECT_DIR$/iroha-android-sample/iroha-android-sample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/wbc.iml" filepath="$PROJECT_DIR$/wbc.iml" />
     </modules>
   </component>
 </project>

@@ -1,6 +1,6 @@
 package jp.co.soramitsu.iroha.android.sample.registration;
 
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.VisibleForTesting;
 
 import javax.inject.Inject;
 

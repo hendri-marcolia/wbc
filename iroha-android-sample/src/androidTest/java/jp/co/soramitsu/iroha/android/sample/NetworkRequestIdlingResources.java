@@ -1,6 +1,6 @@
 package jp.co.soramitsu.iroha.android.sample;
 
-import android.support.test.espresso.IdlingResource;
+import androidx.test.espresso.IdlingResource;
 
 import jp.co.soramitsu.iroha.android.sample.registration.RegistrationPresenter;
 

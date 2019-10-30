@@ -1,6 +1,6 @@
 package jp.co.soramitsu.iroha.android.sample.main.history;
 
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProviders;
 import android.text.format.DateUtils;
 
 import java.math.BigDecimal;

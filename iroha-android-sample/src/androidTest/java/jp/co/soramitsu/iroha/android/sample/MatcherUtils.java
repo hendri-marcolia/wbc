@@ -1,7 +1,7 @@
 package jp.co.soramitsu.iroha.android.sample;
 
-import android.support.annotation.StringRes;
-import android.support.design.widget.TextInputLayout;
+import androidx.annotation.StringRes;
+import com.google.android.material.textfield.TextInputLayout;
 import android.view.View;
 import android.widget.EditText;
 
