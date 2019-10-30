@@ -38,8 +38,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
 
-        <activity
-            android:name=".main.MainActivity"
+        <activity android:name=".view.login.LoginActivity"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -48,13 +47,23 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".registration.RegistrationActivity"
-            android:screenOrientation="portrait" />
+<!--        <activity-->
+<!--            android:name=".main.MainActivity"-->
+<!--            android:windowSoftInputMode="adjustPan"-->
+<!--            android:screenOrientation="portrait">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
 
-        <activity
-            android:name=".qrscanner.QRScannerActivity"
-            android:screenOrientation="portrait" />
+<!--        <activity-->
+<!--            android:name=".registration.RegistrationActivity"-->
+<!--            android:screenOrientation="portrait" />-->
+
+<!--        <activity-->
+<!--            android:name=".qrscanner.QRScannerActivity"-->
+<!--            android:screenOrientation="portrait" />-->
 
     </application>
 

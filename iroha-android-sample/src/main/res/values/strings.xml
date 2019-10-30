@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Iroha-Android</string>
+    <string name="app_name">Brachless Banking</string>
     <string name="to">To</string>
     <string name="amount">Amount</string>
     <string name="or">OR</string>
@@ -26,4 +26,7 @@
     <string name="transaction_successful">Transaction successful.</string>
     <string name="qr_decode_successful">QR decode successful.</string>
     <string name="info">Info</string>
+    <string name="biometric_login">Biometric Login</string>
+    <string name="password_login">Password Login</string>
+    <string name="registration_question">Do not have Account ID ?</string>
 </resources>
