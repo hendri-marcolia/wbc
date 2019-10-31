@@ -12,5 +12,8 @@ public class LoginPresenter {
     @Inject
     public LoginPresenter() {}
 
+    public void loginFromBiometric() {}
+
+    public void loginFromPassword(String accountId, String privateKey) {}
 
 }

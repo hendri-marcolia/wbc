@@ -4,14 +4,13 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricPrompt;
 import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
 
 import java.util.concurrent.Executor;
 
@@ -19,15 +18,14 @@ import javax.inject.Inject;
 
 import jp.co.soramitsu.iroha.android.sample.R;
 import jp.co.soramitsu.iroha.android.sample.SampleApplication;
+import jp.co.soramitsu.iroha.android.sample.databinding.ActivityLoginBinding;
 
 public class LoginActivity extends AppCompatActivity implements LoginView {
+    private ActivityLoginBinding binding;
 
-    private ViewDataBinding binding;
     private AlertDialog passwordPopup;
     private AlertDialog.Builder passwordPopupBuilder;
     private View passwordView;
-
-    private Button biometricButton, passwordButton, registerButton;
 
     private BiometricPrompt biometricPopup;
     private BiometricPrompt.PromptInfo biometricPopupBuilder;
@@ -41,17 +39,14 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
 
         SampleApplication.instance.getApplicationComponent().inject(this);
         presenter.setView(this);
 
-        biometricButton = findViewById(R.id.biometric_button);
-        passwordButton = findViewById(R.id.password_button);
-        registerButton = findViewById(R.id.register_button);
-
-        biometricButton.setOnClickListener(v -> openBiometricPopup());
-        passwordButton.setOnClickListener(v -> openPasswordPopup());
+        binding.biometricButton.setOnClickListener(v -> openBiometricPopup());
+        binding.passwordButton.setOnClickListener(v -> openPasswordPopup());
     }
 
     @Override
@@ -70,6 +65,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
             @Override
             public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
                 super.onAuthenticationSucceeded(result);
+                presenter.loginFromBiometric();
             }
 
             @Override
@@ -88,6 +84,10 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
         passwordPopupBuilder.setView(passwordView);
         passwordPopupBuilder.setTitle(R.string.password_login);
         passwordPopupBuilder.setPositiveButton(R.string.login, (dialog, which) -> {
+            EditText accountId = passwordView.findViewById(R.id.account_id);
+            EditText privateKey = passwordView.findViewById(R.id.password);
+
+            presenter.loginFromPassword(accountId.getText().toString(), privateKey.getText().toString());
             dialog.dismiss();
         });
         passwordPopupBuilder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
