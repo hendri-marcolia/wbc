@@ -1,4 +1,4 @@
-package jp.co.soramitsu.iroha.android.sample.main;
+package jp.co.soramitsu.iroha.android.sample.view.main;
 
 interface MainView {
     void setUsername(String username);

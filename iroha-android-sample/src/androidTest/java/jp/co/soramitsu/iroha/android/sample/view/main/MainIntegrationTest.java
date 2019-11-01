@@ -1,4 +1,4 @@
-package jp.co.soramitsu.iroha.android.sample.main;
+package jp.co.soramitsu.iroha.android.sample.view.main;
 
 import android.content.Context;
 import androidx.test.platform.app.InstrumentationRegistry;

@@ -1,4 +1,4 @@
-package jp.co.soramitsu.iroha.android.sample.main.send;
+package jp.co.soramitsu.iroha.android.sample.view.main.send;
 
 public interface SendView {
 

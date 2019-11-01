@@ -1,4 +1,4 @@
-package jp.co.soramitsu.iroha.android.sample.main.history;
+package jp.co.soramitsu.iroha.android.sample.view.main.history;
 
 import androidx.lifecycle.ViewModelProviders;
 import androidx.databinding.DataBindingUtil;
@@ -17,7 +17,7 @@ import javax.inject.Inject;
 import jp.co.soramitsu.iroha.android.sample.R;
 import jp.co.soramitsu.iroha.android.sample.SampleApplication;
 import jp.co.soramitsu.iroha.android.sample.databinding.FragmentHistoryBinding;
-import jp.co.soramitsu.iroha.android.sample.main.MainActivity;
+import jp.co.soramitsu.iroha.android.sample.view.main.MainActivity;
 
 public class HistoryFragment extends Fragment implements HistoryView {
     private FragmentHistoryBinding binding;

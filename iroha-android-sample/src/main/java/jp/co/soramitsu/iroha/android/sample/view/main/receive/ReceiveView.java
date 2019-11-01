@@ -1,4 +1,4 @@
-package jp.co.soramitsu.iroha.android.sample.main.receive;
+package jp.co.soramitsu.iroha.android.sample.view.main.receive;
 
 import android.graphics.Bitmap;
 

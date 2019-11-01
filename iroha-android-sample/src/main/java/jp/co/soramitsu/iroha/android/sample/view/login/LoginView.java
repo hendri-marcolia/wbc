@@ -4,4 +4,6 @@ public interface LoginView {
     void openBiometricPopup();
 
     void openPasswordPopup();
+
+    void openMainView();
 }

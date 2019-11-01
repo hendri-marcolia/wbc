@@ -1,6 +1,7 @@
 package jp.co.soramitsu.iroha.android.sample.view.login;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -19,6 +20,7 @@ import javax.inject.Inject;
 import jp.co.soramitsu.iroha.android.sample.R;
 import jp.co.soramitsu.iroha.android.sample.SampleApplication;
 import jp.co.soramitsu.iroha.android.sample.databinding.ActivityLoginBinding;
+import jp.co.soramitsu.iroha.android.sample.view.main.MainActivity;
 
 public class LoginActivity extends AppCompatActivity implements LoginView {
     private ActivityLoginBinding binding;
@@ -92,5 +94,11 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
         });
         passwordPopupBuilder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
         passwordPopup = passwordPopupBuilder.show();
+    }
+
+    @Override
+    public void openMainView() {
+        startActivity(new Intent(this, MainActivity.class));
+        finish();
     }
 }

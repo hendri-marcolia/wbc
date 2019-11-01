@@ -1,4 +1,4 @@
-package jp.co.soramitsu.iroha.android.sample.main.history;
+package jp.co.soramitsu.iroha.android.sample.view.main.history;
 
 import androidx.recyclerview.widget.DiffUtil;
 

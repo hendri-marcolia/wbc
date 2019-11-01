@@ -1,4 +1,4 @@
-package jp.co.soramitsu.iroha.android.sample.main.send;
+package jp.co.soramitsu.iroha.android.sample.view.main.send;
 
 import android.Manifest;
 import android.app.Activity;
@@ -27,9 +27,9 @@ import javax.inject.Inject;
 import jp.co.soramitsu.iroha.android.sample.R;
 import jp.co.soramitsu.iroha.android.sample.SampleApplication;
 import jp.co.soramitsu.iroha.android.sample.databinding.FragmentSendBinding;
-import jp.co.soramitsu.iroha.android.sample.main.MainActivity;
+import jp.co.soramitsu.iroha.android.sample.view.main.MainActivity;
 
-import static jp.co.soramitsu.iroha.android.sample.main.send.SendPresenter.REQUEST_CODE_QR_SCAN;
+import static jp.co.soramitsu.iroha.android.sample.view.main.send.SendPresenter.REQUEST_CODE_QR_SCAN;
 
 public class SendFragment extends Fragment implements SendView {
     private FragmentSendBinding binding;

@@ -1,4 +1,4 @@
-package jp.co.soramitsu.iroha.android.sample.main;
+package jp.co.soramitsu.iroha.android.sample.view.main;
 
 public class AccountDetail {
     public final String detail;

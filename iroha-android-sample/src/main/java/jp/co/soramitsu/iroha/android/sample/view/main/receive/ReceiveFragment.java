@@ -1,4 +1,4 @@
-package jp.co.soramitsu.iroha.android.sample.main.receive;
+package jp.co.soramitsu.iroha.android.sample.view.main.receive;
 
 import androidx.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
@@ -17,7 +17,7 @@ import javax.inject.Inject;
 import jp.co.soramitsu.iroha.android.sample.R;
 import jp.co.soramitsu.iroha.android.sample.SampleApplication;
 import jp.co.soramitsu.iroha.android.sample.databinding.FragmentReceiveBinding;
-import jp.co.soramitsu.iroha.android.sample.main.MainActivity;
+import jp.co.soramitsu.iroha.android.sample.view.main.MainActivity;
 
 public class ReceiveFragment extends Fragment implements ReceiveView {
     private FragmentReceiveBinding binding;

@@ -1,10 +1,5 @@
 package jp.co.soramitsu.iroha.android.sample.interactor;
 
-import com.google.protobuf.InvalidProtocolBufferException;
-
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -13,16 +8,9 @@ import javax.inject.Named;
 import io.grpc.ManagedChannel;
 import io.reactivex.Scheduler;
 import io.reactivex.Single;
-import iroha.protocol.BlockOuterClass;
-import iroha.protocol.Queries;
 import jp.co.soramitsu.iroha.android.sample.PreferencesUtil;
 import jp.co.soramitsu.iroha.android.sample.injection.ApplicationModule;
-import jp.co.soramitsu.iroha.android.sample.main.history.Transaction;
-
-import static iroha.protocol.Commands.Command.CommandCase.TRANSFER_ASSET;
-import static jp.co.soramitsu.iroha.android.sample.Constants.ASSET_ID;
-import static jp.co.soramitsu.iroha.android.sample.Constants.DOMAIN_ID;
-import static jp.co.soramitsu.iroha.android.sample.Constants.QUERY_COUNTER;
+import jp.co.soramitsu.iroha.android.sample.view.main.history.Transaction;
 
 public class GetAccountTransactionsInteractor extends SingleInteractor<List<Transaction>, Void> {
 

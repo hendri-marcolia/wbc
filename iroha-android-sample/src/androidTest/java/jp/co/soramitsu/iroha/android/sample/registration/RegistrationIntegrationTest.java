@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 import jp.co.soramitsu.iroha.android.sample.NetworkRequestIdlingResources;
 import jp.co.soramitsu.iroha.android.sample.R;
-import jp.co.soramitsu.iroha.android.sample.main.MainActivity;
+import jp.co.soramitsu.iroha.android.sample.view.main.MainActivity;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
