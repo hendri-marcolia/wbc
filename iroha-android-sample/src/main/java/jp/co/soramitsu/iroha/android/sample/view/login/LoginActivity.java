@@ -21,6 +21,7 @@ import jp.co.soramitsu.iroha.android.sample.R;
 import jp.co.soramitsu.iroha.android.sample.SampleApplication;
 import jp.co.soramitsu.iroha.android.sample.databinding.ActivityLoginBinding;
 import jp.co.soramitsu.iroha.android.sample.view.main.MainActivity;
+import jp.co.soramitsu.iroha.android.sample.view.registration.RegistrationActivity;
 
 public class LoginActivity extends AppCompatActivity implements LoginView {
     private ActivityLoginBinding binding;
@@ -49,6 +50,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
 
         binding.biometricButton.setOnClickListener(v -> openBiometricPopup());
         binding.passwordButton.setOnClickListener(v -> openPasswordPopup());
+        binding.registerButton.setOnClickListener(v -> openRegistrationView());
     }
 
     @Override
@@ -100,5 +102,10 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
     public void openMainView() {
         startActivity(new Intent(this, MainActivity.class));
         finish();
+    }
+
+    @Override
+    public void openRegistrationView() {
+        startActivity(new Intent(this, RegistrationActivity.class));
     }
 }

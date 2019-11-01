@@ -5,13 +5,13 @@
     <string name="or">OR</string>
     <string name="qr_hint">Send via QR code</string>
     <string name="send">send</string>
-    <string name="registration_title">I R O H A</string>
+    <string name="registration_title">Registration Form</string>
     <string name="registration_subtitle">Blockchain technologies for business</string>
     <string name="button_register">Register</string>
     <string name="error_dialog_title">Failure</string>
-    <string name="username_empty_error_dialog_message">Username can\'t be empty</string>
-    <string name="username_already_exists_error_dialog_message">Username already exists</string>
-    <string name="username_doesnt_exists">No such user</string>
+    <string name="username_empty_error_dialog_message">Account ID can\'t be empty</string>
+    <string name="username_already_exists_error_dialog_message">Account ID already exists</string>
+    <string name="username_doesnt_exists">No such Account ID</string>
     <string name="fields_cant_be_empty">Fields can not be empty</string>
     <string name="server_is_not_reachable">Server is not reachable</string>
     <string name="please_wait">Please, wait…</string>
@@ -33,4 +33,8 @@
     <string name="password_hint">Password (Private Key)</string>
     <string name="login">Login</string>
     <string name="cancel">Cancel</string>
+    <string name="fullname_hint">Full Name</string>
+    <string name="birthdate_hint">Birth Date</string>
+    <string name="nationality_hint">Nationality</string>
+    <string name="national_id_hint">National ID Number</string>
 </resources>

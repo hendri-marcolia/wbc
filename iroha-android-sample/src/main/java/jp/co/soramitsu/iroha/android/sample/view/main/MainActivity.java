@@ -32,7 +32,6 @@ import jp.co.soramitsu.iroha.android.sample.databinding.ActivityMainBinding;
 import jp.co.soramitsu.iroha.android.sample.view.main.history.HistoryFragment;
 import jp.co.soramitsu.iroha.android.sample.view.main.receive.ReceiveFragment;
 import jp.co.soramitsu.iroha.android.sample.view.main.send.SendFragment;
-import jp.co.soramitsu.iroha.android.sample.registration.RegistrationActivity;
 
 public class MainActivity extends AppCompatActivity implements MainView, SwipeRefreshLayout.OnRefreshListener {
 
@@ -174,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements MainView, SwipeRe
 
     @Override
     public void showRegistrationScreen() {
-        startActivity(new Intent(this, RegistrationActivity.class));
+        //startActivity(new Intent(this, RegistrationActivity.class));
         finish();
     }
 

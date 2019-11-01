@@ -6,4 +6,6 @@ public interface LoginView {
     void openPasswordPopup();
 
     void openMainView();
+
+    void openRegistrationView();
 }
