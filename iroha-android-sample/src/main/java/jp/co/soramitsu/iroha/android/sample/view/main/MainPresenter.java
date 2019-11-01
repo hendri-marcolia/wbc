@@ -73,7 +73,7 @@ public class MainPresenter {
 
     void logout() {
         preferencesUtil.clear();
-        view.showRegistrationScreen();
+        view.showLoginScreen();
     }
 
     void setAccountDetails(String details) {

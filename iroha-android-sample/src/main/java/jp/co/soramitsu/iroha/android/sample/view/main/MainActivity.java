@@ -29,6 +29,7 @@ import jp.co.soramitsu.iroha.android.sample.PreferencesUtil;
 import jp.co.soramitsu.iroha.android.sample.R;
 import jp.co.soramitsu.iroha.android.sample.SampleApplication;
 import jp.co.soramitsu.iroha.android.sample.databinding.ActivityMainBinding;
+import jp.co.soramitsu.iroha.android.sample.view.login.LoginActivity;
 import jp.co.soramitsu.iroha.android.sample.view.main.history.HistoryFragment;
 import jp.co.soramitsu.iroha.android.sample.view.main.receive.ReceiveFragment;
 import jp.co.soramitsu.iroha.android.sample.view.main.send.SendFragment;
@@ -172,8 +173,8 @@ public class MainActivity extends AppCompatActivity implements MainView, SwipeRe
     }
 
     @Override
-    public void showRegistrationScreen() {
-        //startActivity(new Intent(this, RegistrationActivity.class));
+    public void showLoginScreen() {
+        startActivity(new Intent(this, LoginActivity.class));
         finish();
     }
 

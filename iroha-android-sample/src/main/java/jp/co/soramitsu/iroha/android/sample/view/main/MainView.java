@@ -7,7 +7,7 @@ interface MainView {
 
     void setAccountBalance(String balance);
 
-    void showRegistrationScreen();
+    void showLoginScreen();
 
     void showProgress();
 
