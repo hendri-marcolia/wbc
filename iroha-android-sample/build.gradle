@@ -90,6 +90,9 @@ dependencies {
     implementation "com.github.hyperledger.iroha-java:client:1.1.0-SNAPSHOT"
     implementation group: 'xerces', name: 'xercesImpl', version: '2.12.0'
 
+    // Biometric
+    implementation 'androidx.biometric:biometric:1.0.0-rc02'
+
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-intents:3.2.0'
 
