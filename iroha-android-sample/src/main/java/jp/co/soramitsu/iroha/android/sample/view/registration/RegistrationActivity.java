@@ -43,7 +43,13 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
             String nationalId = binding.nationalIdText.getText().toString();
             String phone = binding.phoneText.getText().toString();
 
-            presenter.ValidateRegistrationForm(accountId, fullName, email, birthDate, nationality, nationalId, phone);
+            boolean allValid = presenter.validateRegistrationForm(accountId, fullName, email, birthDate, nationality, nationalId, phone);
+
+            if (allValid) {
+                presenter.createAccount(accountId);
+            } else {
+
+            }
         });
     }
 
