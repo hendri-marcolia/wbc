@@ -37,4 +37,6 @@
     <string name="birthdate_hint">Birth Date</string>
     <string name="nationality_hint">Nationality</string>
     <string name="national_id_hint">National ID Number</string>
+    <string name="email_hint">E-Mail</string>
+    <string name="phone_hint">Phone Number</string>
 </resources>

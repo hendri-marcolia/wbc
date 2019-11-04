@@ -13,4 +13,8 @@ public interface RegistrationView {
 
     void setNationalIdStatus(boolean valid);
 
+    void setEmailStatus(boolean valid);
+
+    void setPhoneStatus(boolean valid);
+
 }

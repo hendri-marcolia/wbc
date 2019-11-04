@@ -37,11 +37,13 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
         binding.registerButton.setOnClickListener(v -> {
             String accountId = binding.accountIdText.getText().toString();
             String fullName = binding.fullnameText.getText().toString();
+            String email = binding.emailText.getText().toString();
             String birthDate = binding.birthdateText.getText().toString();
             String nationality = binding.nationalityText.getText().toString();
             String nationalId = binding.nationalIdText.getText().toString();
+            String phone = binding.phoneText.getText().toString();
 
-            presenter.ValidateRegistrationForm(accountId, fullName, birthDate, nationality, nationalId);
+            presenter.ValidateRegistrationForm(accountId, fullName, email, birthDate, nationality, nationalId, phone);
         });
     }
 
@@ -63,21 +65,55 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
 
     @Override
     public void setFullNameStatus(boolean valid) {
-
+        if (valid) {
+            binding.fullnameValidator.setErrorEnabled(false);
+        } else {
+            binding.fullnameValidator.setError(getText(R.string.fields_cant_be_empty));
+        }
     }
 
     @Override
     public void setBirthDateStatus(boolean valid) {
-
+        if (valid) {
+            binding.birthdateValidation.setErrorEnabled(false);
+        } else {
+            binding.birthdateValidation.setError(getText(R.string.fields_cant_be_empty));
+        }
     }
 
     @Override
     public void setNationalityStatus(boolean valid) {
-
+        if (valid) {
+            binding.nationalityValidation.setErrorEnabled(false);
+        } else {
+            binding.nationalityValidation.setError(getText(R.string.fields_cant_be_empty));
+        }
     }
 
     @Override
     public void setNationalIdStatus(boolean valid) {
+        if (valid) {
+            binding.nationalIdValidation.setErrorEnabled(false);
+        } else {
+            binding.nationalIdValidation.setError(getText(R.string.fields_cant_be_empty));
+        }
+    }
 
+    @Override
+    public void setEmailStatus(boolean valid) {
+        if (valid) {
+            binding.emailValidator.setErrorEnabled(false);
+        } else {
+            binding.emailValidator.setError(getText(R.string.fields_cant_be_empty));
+        }
+    }
+
+    @Override
+    public void setPhoneStatus(boolean valid) {
+        if (valid) {
+            binding.phoneValidation.setErrorEnabled(false);
+        } else {
+            binding.phoneValidation.setError(getText(R.string.fields_cant_be_empty));
+        }
     }
 }

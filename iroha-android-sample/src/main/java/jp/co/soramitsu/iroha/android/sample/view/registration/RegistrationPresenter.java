@@ -14,9 +14,11 @@ public class RegistrationPresenter {
 
     public void ValidateRegistrationForm(String accountId,
                                          String fullName,
+                                         String email,
                                          String birthDate,
                                          String nationality,
-                                         String nationalId) {
+                                         String nationalId,
+                                         String phone) {
 
         boolean allValid = true;
 
@@ -25,6 +27,48 @@ public class RegistrationPresenter {
             allValid = false;
         } else {
             view.setAccountIdStatus(false, false);
+        }
+
+        if (fullName.isEmpty()) {
+            view.setFullNameStatus(false);
+            allValid = false;
+        } else {
+            view.setFullNameStatus(true);
+        }
+
+        if (email.isEmpty()) {
+            view.setEmailStatus(false);
+            allValid = false;
+        } else {
+            view.setEmailStatus(true);
+        }
+
+        if (birthDate.isEmpty()) {
+            view.setBirthDateStatus(false);
+            allValid = false;
+        } else {
+            view.setBirthDateStatus(true);
+        }
+
+        if (nationality.isEmpty()) {
+            view.setNationalityStatus(false);
+            allValid = false;
+        } else {
+            view.setNationalityStatus(true);
+        }
+
+        if (nationalId.isEmpty()) {
+            view.setNationalIdStatus(false);
+            allValid = false;
+        } else {
+            view.setNationalIdStatus(true);
+        }
+
+        if (phone.isEmpty()) {
+            view.setPhoneStatus(false);
+            allValid = false;
+        } else {
+            view.setPhoneStatus(true);
         }
 
         if (allValid) view.backToLogin();
