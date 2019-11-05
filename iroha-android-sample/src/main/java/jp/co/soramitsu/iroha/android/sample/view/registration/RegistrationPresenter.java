@@ -1,96 +1,96 @@
 package jp.co.soramitsu.iroha.android.sample.view.registration;
 
+import java.security.KeyPair;
+
 import javax.inject.Inject;
 
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
+import jp.co.soramitsu.crypto.ed25519.Ed25519Sha3;
 import jp.co.soramitsu.iroha.android.sample.PreferencesUtil;
+import jp.co.soramitsu.iroha.android.sample.data.Registration;
+import jp.co.soramitsu.iroha.android.sample.data.Validate;
 import jp.co.soramitsu.iroha.android.sample.interactor.CreateAccountInteractor;
+import jp.co.soramitsu.iroha.android.sample.interactor.ValidateAccountInteractor;
+import jp.co.soramitsu.iroha.java.Utils;
 import lombok.Setter;
 
 public class RegistrationPresenter {
 
     private final PreferencesUtil preferencesUtil;
+    private final ValidateAccountInteractor validateAccountInteractor;
     private final CreateAccountInteractor createAccountInteractor;
+    private final Ed25519Sha3 crypto;
 
     @Setter
     private RegistrationView view;
 
     @Inject
     public RegistrationPresenter(PreferencesUtil preferencesUtil,
-                                 CreateAccountInteractor createAccountInteractor) {
+                                 Ed25519Sha3 crypto,
+                                 CreateAccountInteractor createAccountInteractor,
+                                 ValidateAccountInteractor validateAccountInteractor) {
         this.preferencesUtil = preferencesUtil;
+        this.crypto = crypto;
         this.createAccountInteractor = createAccountInteractor;
+        this.validateAccountInteractor = validateAccountInteractor;
     }
 
-    public void createAccount(String accountId) {
-        createAccountInteractor.execute(accountId, () -> {
-
-        }, throwable -> {
-
-        });
-    }
-
-    public boolean validateRegistrationForm(String accountId,
-                                            String fullName,
-                                            String email,
-                                            String birthDate,
-                                            String nationality,
-                                            String nationalId,
-                                            String phone) {
-
-        boolean allValid = true;
+    public void createAccount(String accountId, String fullName, String ktp, String bankAccount) {
+        boolean result = true;
 
         if (accountId.isEmpty()) {
-            view.setAccountIdStatus(true, false);
-            allValid = false;
-        } else {
-            view.setAccountIdStatus(false, false);
+            view.setAccountIdValidation(true, false);
+            result = false;
         }
 
         if (fullName.isEmpty()) {
-            view.setFullNameStatus(false);
-            allValid = false;
-        } else {
-            view.setFullNameStatus(true);
+            view.setFullNameValidation(false);
+            result = false;
         }
 
-        if (email.isEmpty()) {
-            view.setEmailStatus(false);
-            allValid = false;
-        } else {
-            view.setEmailStatus(true);
+        if (ktp.isEmpty()) {
+            view.setKtpValidation(false);
+            result = false;
         }
 
-        if (birthDate.isEmpty()) {
-            view.setBirthDateStatus(false);
-            allValid = false;
-        } else {
-            view.setBirthDateStatus(true);
+        if (bankAccount.isEmpty()) {
+            view.setBankAccountValidation(false);
+            result = false;
         }
 
-        if (nationality.isEmpty()) {
-            view.setNationalityStatus(false);
-            allValid = false;
-        } else {
-            view.setNationalityStatus(true);
-        }
+        if (result) {
+            Validate validate = new Validate();
+            validate.setAccountId(accountId);
 
-        if (nationalId.isEmpty()) {
-            view.setNationalIdStatus(false);
-            allValid = false;
-        } else {
-            view.setNationalIdStatus(true);
-        }
+            validateAccountInteractor.execute(validate, validateResult -> {
+                if (validateResult.getHttpResult().equals("200")) {
+                    KeyPair keyPair = crypto.generateKeypair();
 
-        if (phone.isEmpty()) {
-            view.setPhoneStatus(false);
-            allValid = false;
-        } else {
-            view.setPhoneStatus(true);
-        }
+                    preferencesUtil.saveUsername(accountId);
+                    preferencesUtil.saveKeys(Utils.toHex(keyPair.getPrivate().getEncoded()));
 
-        return allValid;
+                    Registration registration = new Registration();
+                    registration.setAccountId(accountId);
+                    registration.setFullName(fullName);
+                    registration.setBankAccount(bankAccount);
+                    registration.setKtp(ktp);
+                    registration.setFcmId("");
+                    registration.setAccountPublicKey(Utils.toHex(keyPair.getPublic().getEncoded()));
+
+                    createAccountInteractor.execute(registration, registrationResult -> {
+                        if (validateResult.getHttpResult().equals("200")) {
+                            // success
+                        } else {
+                            // error
+                        }
+                    }, throwable -> {
+                        // handling error when request server.
+                    });
+                } else {
+                    view.setAccountIdValidation(false, true);
+                }
+            }, throwable -> {
+                // handling error when request server.
+            });
+        }
     }
-
 }

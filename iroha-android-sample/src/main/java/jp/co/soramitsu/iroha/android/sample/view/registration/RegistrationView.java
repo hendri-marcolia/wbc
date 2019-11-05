@@ -3,18 +3,11 @@ package jp.co.soramitsu.iroha.android.sample.view.registration;
 public interface RegistrationView {
     void backToLogin();
 
-    void setAccountIdStatus(boolean empty, boolean exist);
+    void setAccountIdValidation(boolean empty, boolean exist);
 
-    void setFullNameStatus(boolean valid);
+    void setFullNameValidation(boolean valid);
 
-    void setBirthDateStatus(boolean valid);
+    void setKtpValidation(boolean valid);
 
-    void setNationalityStatus(boolean valid);
-
-    void setNationalIdStatus(boolean valid);
-
-    void setEmailStatus(boolean valid);
-
-    void setPhoneStatus(boolean valid);
-
+    void setBankAccountValidation(boolean valid);
 }

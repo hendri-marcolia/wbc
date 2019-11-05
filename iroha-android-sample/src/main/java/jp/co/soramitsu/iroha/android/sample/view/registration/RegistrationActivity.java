@@ -37,19 +37,10 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
         binding.registerButton.setOnClickListener(v -> {
             String accountId = binding.accountIdText.getText().toString();
             String fullName = binding.fullnameText.getText().toString();
-            String email = binding.emailText.getText().toString();
-            String birthDate = binding.birthdateText.getText().toString();
-            String nationality = binding.nationalityText.getText().toString();
-            String nationalId = binding.nationalIdText.getText().toString();
-            String phone = binding.phoneText.getText().toString();
+            String ktp = binding.ktpText.getText().toString();
+            String bankAccount = binding.bankAccountText.getText().toString();
 
-            boolean allValid = presenter.validateRegistrationForm(accountId, fullName, email, birthDate, nationality, nationalId, phone);
-
-            if (allValid) {
-                presenter.createAccount(accountId);
-            } else {
-
-            }
+            presenter.createAccount(accountId, fullName, ktp, bankAccount);
         });
     }
 
@@ -59,7 +50,7 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
     }
 
     @Override
-    public void setAccountIdStatus(boolean empty, boolean exist) {
+    public void setAccountIdValidation(boolean empty, boolean exist) {
         if (empty) {
             binding.accountIdValidator.setError(getText(R.string.username_empty_error_dialog_message));
         } else if (exist) {
@@ -70,7 +61,7 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
     }
 
     @Override
-    public void setFullNameStatus(boolean valid) {
+    public void setFullNameValidation(boolean valid) {
         if (valid) {
             binding.fullnameValidator.setErrorEnabled(false);
         } else {
@@ -79,47 +70,20 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
     }
 
     @Override
-    public void setBirthDateStatus(boolean valid) {
+    public void setKtpValidation(boolean valid) {
         if (valid) {
-            binding.birthdateValidation.setErrorEnabled(false);
+            binding.ktpValidation.setErrorEnabled(false);
         } else {
-            binding.birthdateValidation.setError(getText(R.string.fields_cant_be_empty));
+            binding.ktpValidation.setError(getText(R.string.fields_cant_be_empty));
         }
     }
 
     @Override
-    public void setNationalityStatus(boolean valid) {
+    public void setBankAccountValidation(boolean valid) {
         if (valid) {
-            binding.nationalityValidation.setErrorEnabled(false);
+            binding.bankAccountValidation.setErrorEnabled(false);
         } else {
-            binding.nationalityValidation.setError(getText(R.string.fields_cant_be_empty));
-        }
-    }
-
-    @Override
-    public void setNationalIdStatus(boolean valid) {
-        if (valid) {
-            binding.nationalIdValidation.setErrorEnabled(false);
-        } else {
-            binding.nationalIdValidation.setError(getText(R.string.fields_cant_be_empty));
-        }
-    }
-
-    @Override
-    public void setEmailStatus(boolean valid) {
-        if (valid) {
-            binding.emailValidator.setErrorEnabled(false);
-        } else {
-            binding.emailValidator.setError(getText(R.string.fields_cant_be_empty));
-        }
-    }
-
-    @Override
-    public void setPhoneStatus(boolean valid) {
-        if (valid) {
-            binding.phoneValidation.setErrorEnabled(false);
-        } else {
-            binding.phoneValidation.setError(getText(R.string.fields_cant_be_empty));
+            binding.bankAccountValidation.setError(getText(R.string.fields_cant_be_empty));
         }
     }
 }

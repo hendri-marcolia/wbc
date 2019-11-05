@@ -63,68 +63,26 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/email_validator">
+                    android:id="@+id/ktp_validation">
 
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/email_text"
-                        android:inputType="textEmailAddress"
-                        android:hint="@string/email_hint"/>
+                        android:id="@+id/ktp_text"
+                        android:hint="@string/ktp_hint"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/birthdate_validation">
+                    android:id="@+id/bank_account_validation">
 
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="date"
-                        android:id="@+id/birthdate_text"
-                        android:hint="@string/birthdate_hint"/>
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/nationality_validation">
-
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/nationality_text"
-                        android:hint="@string/nationality_hint"/>
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/national_id_validation">
-
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/national_id_text"
-                        android:hint="@string/national_id_hint"/>
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/phone_validation">
-
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="phone"
-                        android:id="@+id/phone_text"
-                        android:hint="@string/phone_hint"/>
+                        android:id="@+id/bank_account_text"
+                        android:hint="@string/bank_account_hint"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
