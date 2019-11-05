@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId "jp.co.soramitsu.iroha.android.sample"
+        applicationId "com.wbc.iroha.android"
         minSdkVersion 24
         targetSdkVersion 29
         versionCode 4
@@ -17,15 +17,36 @@ android {
     dataBinding.enabled = true
     buildTypes {
         release {
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             resValue "string", "iroha_url", "178.128.62.169"
             resValue "integer", "iroha_port", "50051"
         }
         debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
             resValue "string", "iroha_url", "178.128.62.169"
             resValue "integer", "iroha_port", "50051"
+            debuggable true
         }
     }
+
+    productFlavors {
+        agent {
+            applicationId "com.wbc.iroha.android.agent"
+            versionCode 1
+            versionName "1.0"
+        }
+
+        client {
+            applicationId "com.wbc.iroha.android.client"
+            versionCode 1
+            versionName "1.0"
+        }
+    }
+
+    flavorDimensions "default"
+
     compileOptions {
         targetCompatibility 1.8
         sourceCompatibility 1.8
