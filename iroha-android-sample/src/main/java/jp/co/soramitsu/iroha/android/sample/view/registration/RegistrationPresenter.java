@@ -25,13 +25,12 @@ public class RegistrationPresenter {
 
     @Inject
     public RegistrationPresenter(PreferencesUtil preferencesUtil,
-                                 Ed25519Sha3 crypto,
                                  CreateAccountInteractor createAccountInteractor,
                                  ValidateAccountInteractor validateAccountInteractor) {
         this.preferencesUtil = preferencesUtil;
-        this.crypto = crypto;
         this.createAccountInteractor = createAccountInteractor;
         this.validateAccountInteractor = validateAccountInteractor;
+        this.crypto = new Ed25519Sha3();
     }
 
     public void createAccount(String accountId, String fullName, String ktp, String bankAccount) {

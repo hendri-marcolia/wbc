@@ -1,11 +1,13 @@
 package jp.co.soramitsu.iroha.android.sample.interactor;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import io.reactivex.Scheduler;
 import io.reactivex.Single;
 import jp.co.soramitsu.iroha.android.sample.data.HttpResult;
 import jp.co.soramitsu.iroha.android.sample.data.Validate;
+import jp.co.soramitsu.iroha.android.sample.injection.ApplicationModule;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -20,7 +22,8 @@ public class ValidateAccountInteractor extends SingleInteractor<HttpResult, Vali
     private ValidateAccountApi api;
 
     @Inject
-    ValidateAccountInteractor(Scheduler jobScheduler, Scheduler uiScheduler) {
+    ValidateAccountInteractor(@Named(ApplicationModule.JOB) Scheduler jobScheduler,
+                              @Named(ApplicationModule.UI) Scheduler uiScheduler) {
         super(jobScheduler, uiScheduler);
         retrofit = new Retrofit
                 .Builder()
