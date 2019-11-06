@@ -14,5 +14,5 @@ public interface Constants {
     String IROHA_URL = "178.128.62.169";
     int IROHA_PORT = 50051;
 
-    String BANK_URL = "http://178.128.62.169:5000";
+    String BANK_URL = "https://server.weekendbitcoin.asia/";
 }
