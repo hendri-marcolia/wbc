@@ -61,7 +61,7 @@ public class RegistrationPresenter {
             validate.setAccountId(accountId);
 
             validateAccountInteractor.execute(validate, validateResult -> {
-                if (validateResult.getHttpResult().equals("200")) {
+                if (validateResult.getHttpResult() == 200) {
                     KeyPair keyPair = crypto.generateKeypair();
 
                     preferencesUtil.saveUsername(accountId);
@@ -76,7 +76,7 @@ public class RegistrationPresenter {
                     registration.setAccountPublicKey(Utils.toHex(keyPair.getPublic().getEncoded()));
 
                     createAccountInteractor.execute(registration, registrationResult -> {
-                        if (validateResult.getHttpResult().equals("200")) {
+                        if (validateResult.getHttpResult() == 200) {
                             // success
                         } else {
                             // error

@@ -1,5 +1,7 @@
 package jp.co.soramitsu.iroha.android.sample.view.login;
 
+import android.util.Log;
+
 import javax.inject.Inject;
 
 import jp.co.soramitsu.iroha.android.sample.PreferencesUtil;
@@ -31,13 +33,17 @@ public class LoginPresenter {
         validate.setAccountId(accountId);
 
         validateAccountInteractor.execute(validate, validateResult -> {
-            if (validateResult.getHttpResult().equals("200")) {
+            Log.d(LoginPresenter.class.getSimpleName(), "HTTP: " + validateResult.getHttpResult() + ", MSG: " + validateResult.getMessage());
+            if (validateResult.getHttpResult() == 200) {
+                preferencesUtil.saveUsername(accountId);
+                preferencesUtil.saveKeys(privateKey);
                 view.openMainView();
             } else {
                 // user not found;
             }
         }, throwable -> {
             // Connection error
+            Log.d(LoginPresenter.class.getSimpleName(), throwable.getMessage());
         });
     }
 

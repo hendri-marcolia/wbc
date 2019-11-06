@@ -10,12 +10,17 @@ public class HttpResult {
     @Setter
     @Getter
     @SerializedName("http_result")
-    private String httpResult;
+    private int httpResult;
 
     @Setter
     @Getter
     @SerializedName("message")
     private String message;
+
+    @Setter
+    @Getter
+    @SerializedName("data")
+    private BankInfo bankInfo;
 
     public HttpResult() {}
 }
