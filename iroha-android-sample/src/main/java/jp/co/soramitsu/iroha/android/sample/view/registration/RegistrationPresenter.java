@@ -77,7 +77,7 @@ public class RegistrationPresenter {
 
                     createAccountInteractor.execute(registration, registrationResult -> {
                         if (validateResult.getHttpResult() == 200) {
-                            // success
+                            view.openMainView();
                         } else {
                             // error
                         }

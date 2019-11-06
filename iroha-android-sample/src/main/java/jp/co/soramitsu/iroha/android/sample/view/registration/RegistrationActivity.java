@@ -1,5 +1,6 @@
 package jp.co.soramitsu.iroha.android.sample.view.registration;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -11,6 +12,7 @@ import javax.inject.Inject;
 import jp.co.soramitsu.iroha.android.sample.R;
 import jp.co.soramitsu.iroha.android.sample.SampleApplication;
 import jp.co.soramitsu.iroha.android.sample.databinding.ActivityRegistrationBinding;
+import jp.co.soramitsu.iroha.android.sample.view.main.MainActivity;
 
 public class RegistrationActivity extends AppCompatActivity implements RegistrationView {
 
@@ -42,11 +44,6 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
 
             presenter.createAccount(accountId, fullName, ktp, bankAccount);
         });
-    }
-
-    @Override
-    public void backToLogin() {
-        finish();
     }
 
     @Override
@@ -85,5 +82,11 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
         } else {
             binding.bankAccountValidation.setError(getText(R.string.fields_cant_be_empty));
         }
+    }
+
+    @Override
+    public void openMainView() {
+        startActivity(new Intent(this, MainActivity.class));
+        finishAffinity();
     }
 }
