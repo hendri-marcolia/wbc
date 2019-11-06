@@ -3,6 +3,7 @@ package jp.co.soramitsu.iroha.android.sample.interactor;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.math.BigInteger;
+import java.security.KeyPair;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -10,8 +11,11 @@ import javax.inject.Named;
 import io.grpc.ManagedChannel;
 import io.reactivex.Scheduler;
 import io.reactivex.Single;
+import iroha.protocol.QryResponses;
 import jp.co.soramitsu.iroha.android.sample.PreferencesUtil;
 import jp.co.soramitsu.iroha.android.sample.injection.ApplicationModule;
+import jp.co.soramitsu.iroha.java.IrohaAPI;
+import jp.co.soramitsu.iroha.java.Query;
 
 import static jp.co.soramitsu.iroha.android.sample.Constants.DOMAIN_ID;
 import static jp.co.soramitsu.iroha.android.sample.Constants.QUERY_COUNTER;
@@ -33,7 +37,17 @@ public class GetAccountBalanceInteractor extends SingleInteractor<String, Void> 
     @Override
     protected Single<String> build(Void v) {
         return Single.create(emitter -> {
-            long currentTime = System.currentTimeMillis();
+            KeyPair userKeys = preferenceUtils.retrieveKeys();
+            String username = preferenceUtils.retrieveUsername();
+
+            IrohaAPI api = getIrohaAPI();
+            QryResponses.QueryResponse resp = api.query(Query.builder(username, 1)
+                    .getAccountAssets(username)
+                    .buildSigned(userKeys));
+
+            emitter.onSuccess(resp.getAccountAssetsResponse().getAccountAssets(0).getBalance());
+
+            //long currentTime = System.currentTimeMillis();
 
 //            Keypair userKeys = preferenceUtils.retrieveKeys();
 //            String username = preferenceUtils.retrieveUsername();
