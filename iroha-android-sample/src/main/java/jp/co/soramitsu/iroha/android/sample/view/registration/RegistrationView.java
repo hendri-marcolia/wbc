@@ -1,16 +1,13 @@
 package jp.co.soramitsu.iroha.android.sample.view.registration;
 
 public interface RegistrationView {
-    void backToLogin();
+    void setAccountIdValidation(boolean empty, boolean exist);
 
-    void setAccountIdStatus(boolean empty, boolean exist);
+    void setFullNameValidation(boolean valid);
 
-    void setFullNameStatus(boolean valid);
+    void setKtpValidation(boolean valid);
 
-    void setBirthDateStatus(boolean valid);
+    void setBankAccountValidation(boolean valid);
 
-    void setNationalityStatus(boolean valid);
-
-    void setNationalIdStatus(boolean valid);
-
+    void openMainView();
 }

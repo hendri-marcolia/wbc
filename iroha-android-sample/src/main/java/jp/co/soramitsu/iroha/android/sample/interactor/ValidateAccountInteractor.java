@@ -6,7 +6,7 @@ import javax.inject.Named;
 import io.reactivex.Scheduler;
 import io.reactivex.Single;
 import jp.co.soramitsu.iroha.android.sample.data.HttpResult;
-import jp.co.soramitsu.iroha.android.sample.data.Registration;
+import jp.co.soramitsu.iroha.android.sample.data.Validate;
 import jp.co.soramitsu.iroha.android.sample.injection.ApplicationModule;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -16,32 +16,31 @@ import retrofit2.http.POST;
 
 import static jp.co.soramitsu.iroha.android.sample.Constants.BANK_URL;
 
-public class CreateAccountInteractor extends SingleInteractor<HttpResult, Registration> {
+public class ValidateAccountInteractor extends SingleInteractor<HttpResult, Validate> {
 
     private Retrofit retrofit;
-    private CreateAccountApi api;
+    private ValidateAccountApi api;
 
     @Inject
-    CreateAccountInteractor(@Named(ApplicationModule.JOB) Scheduler jobScheduler,
-                            @Named(ApplicationModule.UI) Scheduler uiScheduler) {
+    ValidateAccountInteractor(@Named(ApplicationModule.JOB) Scheduler jobScheduler,
+                              @Named(ApplicationModule.UI) Scheduler uiScheduler) {
         super(jobScheduler, uiScheduler);
-
         retrofit = new Retrofit
                 .Builder()
                 .baseUrl(BANK_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
-        api = retrofit.create(CreateAccountApi.class);
+        api = retrofit.create(ValidateAccountApi.class);
     }
 
     @Override
-    protected Single<HttpResult> build(Registration parameter) {
-        return api.registerAccount(parameter);
+    protected Single<HttpResult> build(Validate parameter) {
+        return api.validateAccount(parameter);
     }
 
-    private interface CreateAccountApi {
-        @POST("register_account")
-        Single<HttpResult> registerAccount(@Body Registration registration);
+    private interface ValidateAccountApi {
+        @POST("validate_account")
+        Single<HttpResult> validateAccount(@Body Validate validate);
     }
 }

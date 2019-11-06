@@ -1,5 +1,6 @@
 package jp.co.soramitsu.iroha.android.sample.view.registration;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -11,6 +12,7 @@ import javax.inject.Inject;
 import jp.co.soramitsu.iroha.android.sample.R;
 import jp.co.soramitsu.iroha.android.sample.SampleApplication;
 import jp.co.soramitsu.iroha.android.sample.databinding.ActivityRegistrationBinding;
+import jp.co.soramitsu.iroha.android.sample.view.main.MainActivity;
 
 public class RegistrationActivity extends AppCompatActivity implements RegistrationView {
 
@@ -37,21 +39,15 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
         binding.registerButton.setOnClickListener(v -> {
             String accountId = binding.accountIdText.getText().toString();
             String fullName = binding.fullnameText.getText().toString();
-            String birthDate = binding.birthdateText.getText().toString();
-            String nationality = binding.nationalityText.getText().toString();
-            String nationalId = binding.nationalIdText.getText().toString();
+            String ktp = binding.ktpText.getText().toString();
+            String bankAccount = binding.bankAccountText.getText().toString();
 
-            presenter.ValidateRegistrationForm(accountId, fullName, birthDate, nationality, nationalId);
+            presenter.createAccount(accountId, fullName, ktp, bankAccount);
         });
     }
 
     @Override
-    public void backToLogin() {
-        finish();
-    }
-
-    @Override
-    public void setAccountIdStatus(boolean empty, boolean exist) {
+    public void setAccountIdValidation(boolean empty, boolean exist) {
         if (empty) {
             binding.accountIdValidator.setError(getText(R.string.username_empty_error_dialog_message));
         } else if (exist) {
@@ -62,22 +58,35 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
     }
 
     @Override
-    public void setFullNameStatus(boolean valid) {
-
+    public void setFullNameValidation(boolean valid) {
+        if (valid) {
+            binding.fullnameValidator.setErrorEnabled(false);
+        } else {
+            binding.fullnameValidator.setError(getText(R.string.fields_cant_be_empty));
+        }
     }
 
     @Override
-    public void setBirthDateStatus(boolean valid) {
-
+    public void setKtpValidation(boolean valid) {
+        if (valid) {
+            binding.ktpValidation.setErrorEnabled(false);
+        } else {
+            binding.ktpValidation.setError(getText(R.string.fields_cant_be_empty));
+        }
     }
 
     @Override
-    public void setNationalityStatus(boolean valid) {
-
+    public void setBankAccountValidation(boolean valid) {
+        if (valid) {
+            binding.bankAccountValidation.setErrorEnabled(false);
+        } else {
+            binding.bankAccountValidation.setError(getText(R.string.fields_cant_be_empty));
+        }
     }
 
     @Override
-    public void setNationalIdStatus(boolean valid) {
-
+    public void openMainView() {
+        startActivity(new Intent(this, MainActivity.class));
+        finishAffinity();
     }
 }

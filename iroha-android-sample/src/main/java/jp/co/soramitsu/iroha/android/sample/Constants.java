@@ -10,4 +10,9 @@ public interface Constants {
     int CONNECTION_TIMEOUT_SECONDS = 20;
     int MAX_ACCOUNT_DETAILS_SIZE = 32;
     String ACCOUNT_DETAILS = "account_details";
+
+    String IROHA_URL = "178.128.62.169";
+    int IROHA_PORT = 50051;
+
+    String BANK_URL = "http://178.128.62.169:5000";
 }
