@@ -69,9 +69,9 @@
 <!--            android:name=".registration.RegistrationActivity"-->
 <!--            android:screenOrientation="portrait" />-->
 
-<!--        <activity-->
-<!--            android:name=".qrscanner.QRScannerActivity"-->
-<!--            android:screenOrientation="portrait" />-->
+        <activity
+            android:name=".qrscanner.QRScannerActivity"
+            android:screenOrientation="portrait" />
 
     </application>
 

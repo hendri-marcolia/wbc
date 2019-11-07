@@ -11,6 +11,7 @@ import com.google.zxing.qrcode.encoder.ByteMatrix;
 import com.google.zxing.qrcode.encoder.Encoder;
 import com.google.zxing.qrcode.encoder.QRCode;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,7 +47,7 @@ public class GenerateQRInteractor extends SingleInteractor<Bitmap, String> {
     protected Single<Bitmap> build(String amount) {
         return Single.create(emitter -> {
             String username = preferenceUtils.retrieveUsername();
-            String qrText = username + "," + amount;
+            String qrText = username + "," + amount + "," + new Date().toString();
                         Map<EncodeHintType, String> hints = new HashMap<>();
             hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
             QRCode qrCode = Encoder.encode(qrText, ErrorCorrectionLevel.H, hints);

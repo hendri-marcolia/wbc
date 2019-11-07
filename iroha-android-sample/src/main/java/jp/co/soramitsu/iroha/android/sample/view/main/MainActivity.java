@@ -5,9 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AlertDialog;
@@ -28,11 +27,10 @@ import jp.co.soramitsu.iroha.android.sample.Constants;
 import jp.co.soramitsu.iroha.android.sample.PreferencesUtil;
 import jp.co.soramitsu.iroha.android.sample.R;
 import jp.co.soramitsu.iroha.android.sample.SampleApplication;
+import jp.co.soramitsu.iroha.android.sample.adapter.MainAdapter;
 import jp.co.soramitsu.iroha.android.sample.databinding.ActivityMainBinding;
+import jp.co.soramitsu.iroha.android.sample.fragmentinterface.OnBackPressed;
 import jp.co.soramitsu.iroha.android.sample.view.login.LoginActivity;
-import jp.co.soramitsu.iroha.android.sample.view.main.history.HistoryFragment;
-import jp.co.soramitsu.iroha.android.sample.view.main.receive.ReceiveFragment;
-import jp.co.soramitsu.iroha.android.sample.view.main.send.SendFragment;
 
 public class MainActivity extends AppCompatActivity implements MainView, SwipeRefreshLayout.OnRefreshListener {
 
@@ -138,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements MainView, SwipeRe
     }
 
     private void setupViewPager() {
-        Adapter adapter = new Adapter(getSupportFragmentManager());
+        MainAdapter adapter = new MainAdapter(getSupportFragmentManager());
         binding.content.setAdapter(adapter);
 
         binding.content.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -237,37 +235,12 @@ public class MainActivity extends AppCompatActivity implements MainView, SwipeRe
         presenter.updateData(true);
     }
 
-    public static class Adapter extends FragmentPagerAdapter {
-
-        Adapter(FragmentManager manager) {
-            super(manager);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            if (position == 0) {
-                return new SendFragment();
-            } else if (position == 1) {
-                return new ReceiveFragment();
-            } else {
-                return new HistoryFragment();
-            }
-        }
-
-        @Override
-        public int getCount() {
-            return 3;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            if (position == 0) {
-                return "SEND";
-            } else if (position == 1) {
-                return "RECEIVE";
-            } else {
-                return "HISTORY";
-            }
-        }
+    @Override
+    public void onBackPressed() {
+        Fragment fragment = ((MainAdapter)binding.content.getAdapter()).getItem(binding.content.getCurrentItem());
+        if (fragment instanceof OnBackPressed) {
+            if(((OnBackPressed) fragment).onBackPressed()) super.onBackPressed();
+        }else
+        super.onBackPressed();
     }
 }

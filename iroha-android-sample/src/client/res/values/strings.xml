@@ -5,6 +5,9 @@
     <string name="or">OR</string>
     <string name="qr_hint">Send via QR code</string>
     <string name="send">send</string>
+    <string name="deposit">Deposit</string>
+    <string name="withdraw">Withdraw</string>
+    <string name="scan_qr">ScanQR</string>
     <string name="registration_title">Registration Form</string>
     <string name="registration_subtitle">Blockchain technologies for business</string>
     <string name="button_register">Register</string>
