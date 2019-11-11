@@ -13,4 +13,8 @@ public class Validate {
     private String accountId;
 
     public Validate() {}
+
+    public Validate(String accountId) {
+        this.accountId = accountId;
+    }
 }

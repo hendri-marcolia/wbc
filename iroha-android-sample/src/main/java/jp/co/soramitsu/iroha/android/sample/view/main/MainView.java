@@ -15,6 +15,8 @@ interface MainView {
 
     void showError(Throwable throwable);
 
+    void showInfo(String info);
+
     void hideRefresh();
 
     void refreshData(boolean animate);

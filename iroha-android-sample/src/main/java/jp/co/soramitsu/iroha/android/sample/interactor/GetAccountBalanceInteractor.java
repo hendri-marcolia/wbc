@@ -17,10 +17,7 @@ import jp.co.soramitsu.iroha.android.sample.injection.ApplicationModule;
 import jp.co.soramitsu.iroha.java.IrohaAPI;
 import jp.co.soramitsu.iroha.java.Query;
 
-import static jp.co.soramitsu.iroha.android.sample.Constants.DOMAIN_ID;
-import static jp.co.soramitsu.iroha.android.sample.Constants.QUERY_COUNTER;
-
-public class GetAccountBalanceInteractor extends SingleInteractor<String, Void> {
+public class GetAccountBalanceInteractor extends SingleInteractor<Long, Void> {
 
     private final PreferencesUtil preferenceUtils;
     private final ManagedChannel channel;
@@ -35,17 +32,34 @@ public class GetAccountBalanceInteractor extends SingleInteractor<String, Void> 
     }
 
     @Override
-    protected Single<String> build(Void v) {
+    protected Single<Long> build(Void v) {
         return Single.create(emitter -> {
-            KeyPair userKeys = preferenceUtils.retrieveKeys();
-            String username = preferenceUtils.retrieveUsername();
-
-            IrohaAPI api = getIrohaAPI();
-            QryResponses.QueryResponse resp = api.query(Query.builder(username, 1)
-                    .getAccountAssets(username)
-                    .buildSigned(userKeys));
-
-            emitter.onSuccess(resp.getAccountAssetsResponse().getAccountAssets(0).getBalance());
+            try {
+                long currentTime = System.currentTimeMillis();
+                KeyPair userKeys = preferenceUtils.retrieveKeys();
+                String username = preferenceUtils.retrieveUsername();
+                String domain = preferenceUtils.retrieveDomain();
+                String USR = String.format("%s@%s",username,domain);
+                IrohaAPI api = getIrohaAPI();
+                QryResponses.QueryResponse resp = api.query(Query.builder(USR, currentTime, 1)
+                        .getAccountAssets(USR)
+                        .buildSigned(userKeys));
+                try {
+                    if (resp.getAccountAssetsResponse().getAccountAssetsCount() < 1) {
+                        emitter.onSuccess(0l);
+                    } else {
+                        resp.getAccountAssetsResponse().getAccountAssetsList().forEach(accountAsset -> {
+                            if (accountAsset.getAssetId().startsWith("online")){
+                                emitter.onSuccess(Long.parseLong(accountAsset.getBalance()));
+                            }
+                        });
+                    }
+                }catch (Exception e) {
+                    emitter.onSuccess(0l);
+                }
+            }catch (Exception e) {
+                emitter.onError(e);
+            }
 
             //long currentTime = System.currentTimeMillis();
 

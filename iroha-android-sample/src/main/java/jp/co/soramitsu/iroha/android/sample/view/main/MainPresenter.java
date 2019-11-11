@@ -3,6 +3,7 @@ package jp.co.soramitsu.iroha.android.sample.view.main;
 
 import javax.inject.Inject;
 
+import jp.co.soramitsu.iroha.android.sample.MyUtils;
 import jp.co.soramitsu.iroha.android.sample.PreferencesUtil;
 import jp.co.soramitsu.iroha.android.sample.SampleApplication;
 import jp.co.soramitsu.iroha.android.sample.data.Account;
@@ -55,15 +56,15 @@ public class MainPresenter {
                             },
                             throwable -> view.showError(throwable)
                     );
-//                    getAccountBalanceInteractor.execute(
-//                            balance -> {
-//                                if (fromRefresh) {
-//                                    view.hideRefresh();
-//                                }
-//                                view.setAccountBalance(balance + " IRH");
-//                                SampleApplication.instance.account.setBalance(Long.parseLong(balance));
-//                            },
-//                            throwable -> view.showError(throwable));
+                    getAccountBalanceInteractor.execute(
+                            balance -> {
+                                if (fromRefresh) {
+                                    view.hideRefresh();
+                                }
+                                view.setAccountBalance(MyUtils.formatIDR(balance));
+                                SampleApplication.instance.account.setBalance(balance);
+                            },
+                            throwable -> view.showError(throwable));
                 },
                 throwable -> view.showError(throwable)
         );
@@ -87,7 +88,7 @@ public class MainPresenter {
         });
     }
 
-    void onStop() {
+    void onDestroy() {
         view = null;
         setAccountDetails.unsubscribe();
         getAccountDetails.unsubscribe();

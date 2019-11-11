@@ -45,15 +45,15 @@ class Interactor {
 //        ByteVector txhash = utx.hash().blob();
 //        byte bshash[] = toByteArray(txhash);
 //
-//        Endpoint.TxStatusRequest request = Endpoint.TxStatusRequest.newBuilder().setTxHash(ByteString.copyFrom(bshash)).build();
+//        EndPoint.TxStatusRequest request = EndPoint.TxStatusRequest.newBuilder().setTxHash(ByteString.copyFrom(bshash)).build();
 //
-//        Iterator<Endpoint.ToriiResponse> features = stub.statusStream(request);
+//        Iterator<EndPoint.ToriiResponse> features = stub.statusStream(request);
 //
-//        Endpoint.ToriiResponse response = null;
+//        EndPoint.ToriiResponse response = null;
 //        while (features.hasNext()) {
 //            response = features.next();
 //        }
-//        return response.getTxStatus() == Endpoint.TxStatus.COMMITTED;
+//        return response.getTxStatus() == EndPoint.TxStatus.COMMITTED;
 //    }
 
 

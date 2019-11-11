@@ -6,7 +6,7 @@ import javax.inject.Inject;
 
 import jp.co.soramitsu.iroha.android.sample.PreferencesUtil;
 import jp.co.soramitsu.iroha.android.sample.data.Validate;
-import jp.co.soramitsu.iroha.android.sample.interactor.ValidateAccountInteractor;
+import jp.co.soramitsu.iroha.android.sample.interactor.register.ValidateAccountInteractor;
 import lombok.Setter;
 
 public class LoginPresenter {

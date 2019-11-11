@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import jp.co.soramitsu.iroha.android.sample.view.main.history.HistoryFragment;
 import jp.co.soramitsu.iroha.android.sample.view.main.receive.ReceiveFragment;
 import jp.co.soramitsu.iroha.android.sample.view.main.send.SendFragment;
+import jp.co.soramitsu.iroha.android.sample.view.scan.ScanFragment;
 
 
 public class MainAdapter extends FragmentPagerAdapter {
@@ -17,7 +18,7 @@ public class MainAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if (position == 0) {
-            return new Fragment();
+            return new ScanFragment();
         } else if (position == 1) {
             return new Fragment();
         } else {

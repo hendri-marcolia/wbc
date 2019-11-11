@@ -23,11 +23,6 @@ import io.reactivex.Single;
 import jp.co.soramitsu.iroha.android.sample.PreferencesUtil;
 import jp.co.soramitsu.iroha.android.sample.injection.ApplicationModule;
 
-import static jp.co.soramitsu.iroha.android.sample.Constants.CONNECTION_TIMEOUT_SECONDS;
-import static jp.co.soramitsu.iroha.android.sample.Constants.CREATOR;
-import static jp.co.soramitsu.iroha.android.sample.Constants.DOMAIN_ID;
-import static jp.co.soramitsu.iroha.android.sample.Constants.PRIV_KEY;
-import static jp.co.soramitsu.iroha.android.sample.Constants.PUB_KEY;
 
 public class GenerateQRInteractor extends SingleInteractor<Bitmap, String> {
 

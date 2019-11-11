@@ -1,5 +1,7 @@
 package jp.co.soramitsu.iroha.android.sample.interactor;
 
+import javax.annotation.Nullable;
+
 import io.reactivex.Completable;
 import io.reactivex.Scheduler;
 import io.reactivex.functions.Action;
@@ -7,7 +9,7 @@ import io.reactivex.functions.Consumer;
 
 public abstract class CompletableInteractor<ParameterType> extends Interactor {
 
-    CompletableInteractor(Scheduler jobScheduler, Scheduler uiScheduler) {
+    protected CompletableInteractor(Scheduler jobScheduler, Scheduler uiScheduler) {
         super(jobScheduler, uiScheduler);
     }
 

@@ -62,14 +62,6 @@ public class MainActivity extends AppCompatActivity implements MainView, SwipeRe
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        // test
-        String username = preferencesUtil.retrieveUsername();
-        if (username.length()<1){
-            preferencesUtil.saveUsername("admin");
-            preferencesUtil.saveKeys("cded824a3b0fc1de4e0a8e48d8d7c3cf26944ea396dce2743dcee4ae95c62e51");
-        }
-        // test
-
         createProgressDialog();
         configureRefreshLayout();
 
@@ -207,6 +199,22 @@ public class MainActivity extends AppCompatActivity implements MainView, SwipeRe
     }
 
     @Override
+    public void showInfo(String info) {
+        hideRefresh();
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.info_dialog_title))
+                .setMessage(
+                        info
+                )
+                .setCancelable(true)
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+
+                })
+                .create();
+        alertDialog.show();
+    }
+
+    @Override
     public void hideRefresh() {
 //        binding.swiperefresh.setRefreshing(false);
         swipeLayout.setRefreshing(false);
@@ -215,7 +223,12 @@ public class MainActivity extends AppCompatActivity implements MainView, SwipeRe
     @Override
     public void onStop() {
         super.onStop();
-        presenter.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
     }
 
     @Override

@@ -2,15 +2,18 @@ package jp.co.soramitsu.iroha.android.sample.view.deposit;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.gson.Gson;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
@@ -29,10 +32,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import jp.co.soramitsu.iroha.android.sample.EndPoint.EndPoint;
+import jp.co.soramitsu.iroha.android.sample.MyUtils;
 import jp.co.soramitsu.iroha.android.sample.R;
 import jp.co.soramitsu.iroha.android.sample.SampleApplication;
+import jp.co.soramitsu.iroha.android.sample.data.Payload;
+import jp.co.soramitsu.iroha.android.sample.data.PerformSavePayload;
+import jp.co.soramitsu.iroha.android.sample.data.Transaction;
 import jp.co.soramitsu.iroha.android.sample.databinding.FragmentDepositBinding;
+import jp.co.soramitsu.iroha.android.sample.entity.TransactionEntity;
 import jp.co.soramitsu.iroha.android.sample.fragmentinterface.OnBackPressed;
+import jp.co.soramitsu.iroha.android.sample.view.main.MainActivity;
 
 public class DepositFragment extends Fragment implements DepositView, OnBackPressed {
     private FragmentDepositBinding binding;
@@ -52,12 +62,12 @@ public class DepositFragment extends Fragment implements DepositView, OnBackPres
         RxView.clicks(binding.deposit)
                 .subscribe(view -> {
                     String amount = binding.amount.getText().toString().trim();
-                    presenter.showQR(amount);
-                    NumberFormat format = NumberFormat.getCurrencyInstance();
-                    format.setMaximumFractionDigits(0);
-                    Locale locale = new Locale("in", "ID");
-                    format.setCurrency(Currency.getInstance(locale));
-                    binding.confAmount.setText("Rp " + format.format(Integer.parseInt(amount)));
+                    if (amount.length() < 1 && Long.parseLong(amount) < 1)
+                        return;
+                    InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(getView().getRootView().getWindowToken(), 0);
+                    presenter.showQR(Long.parseLong(amount));
+
                 });
         RxView.clicks(binding.scanQR)
                 .subscribe(view -> {
@@ -80,26 +90,33 @@ public class DepositFragment extends Fragment implements DepositView, OnBackPres
                                 }
                             }).check();
                 });
-
+        RxView.clicks(binding.screenBlocker)
+                .subscribe(view -> {
+                    hideBottomSheet();
+                });
 
 
         return binding.getRoot();
     }
 
-    public void didGenerateSuccess(Bitmap bitmap){
+    public void didGenerateSuccess(Bitmap bitmap, Long amount) {
         binding.qrCodeImageView.setImageBitmap(bitmap);
         binding.bottomSheet.setVisibility(View.VISIBLE);
         binding.screenBlocker.setVisibility(View.VISIBLE);
+        binding.confAmount.setText(MyUtils.formatIDR(amount));
         BottomSheetBehavior.from(binding.bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        presenter.onStop();
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
+    }
 
 
     @Override
@@ -107,23 +124,46 @@ public class DepositFragment extends Fragment implements DepositView, OnBackPres
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == DepositPresenter.REQUEST_CODE_QR_SCAN) {
                 if (data == null) {
-                    Toast.makeText(getContext(), "QR invalid", Toast.LENGTH_LONG);
+                    ((MainActivity) getActivity()).showError(new Throwable("QR Invalid"));
                 } else {
-                    String result = data.getData().toString();
-                    Toast.makeText(getContext(), "QR Payload", Toast.LENGTH_LONG);
+                    try {
+                        Transaction transaction = new Gson().fromJson(data.getData().toString(), Transaction.class);
+                        if(presenter.validateTransaction(transaction)){
+                            switch (transaction.getTransactionType()){
+                                case ONLINE:
+                                    presenter.doDepositOnline(transaction,
+                                            new Runnable() {
+                                                @Override
+                                                public void run()
+                                                {
+                                                    ((MainActivity)getActivity()).hideProgress();
+                                                    hideBottomSheet();
+                                                    new TransactionEntity(new Gson().toJson(transaction), false).save();
+                                                }
+                                            });
+                                    break;
+                                case OFFLINE:
+                                    break;
+                            }
+                        }else {
+                            showError(new Throwable("Unknown Error while validating the Transaction"));
+                        }
+
+                    } catch (Throwable e) {
+                        showError(e);
+                    }
                 }
             }
         }
     }
 
-    @Override
-    public boolean onBackPressed() {
-        if(BottomSheetBehavior.from(binding.bottomSheet).getState() == BottomSheetBehavior.STATE_EXPANDED){
+    private boolean hideBottomSheet() {
+        if (BottomSheetBehavior.from(binding.bottomSheet).getState() == BottomSheetBehavior.STATE_EXPANDED) {
             BottomSheetBehavior.from(binding.bottomSheet).setState(BottomSheetBehavior.STATE_COLLAPSED);
             BottomSheetBehavior.from(binding.bottomSheet).setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
                 @Override
                 public void onStateChanged(@NonNull View view, int i) {
-                    if (BottomSheetBehavior.STATE_COLLAPSED == i){
+                    if (BottomSheetBehavior.STATE_COLLAPSED == i) {
                         binding.bottomSheet.setVisibility(View.GONE);
                         binding.screenBlocker.setVisibility(View.GONE);
                     }
@@ -137,5 +177,30 @@ public class DepositFragment extends Fragment implements DepositView, OnBackPres
             return false;
         }
         return true;
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        return hideBottomSheet();
+    }
+
+    @Override
+    public void showError(Throwable e) {
+        ((MainActivity) getActivity()).showError(e);
+    }
+
+    @Override
+    public void showInfo(String msg) {
+        ((MainActivity) getActivity()).showInfo(msg);
+    }
+
+    @Override
+    public void showLoading() {
+        ((MainActivity) getActivity()).showProgress();
+    }
+
+    @Override
+    public void hideLoading() {
+        ((MainActivity) getActivity()).hideProgress();
     }
 }

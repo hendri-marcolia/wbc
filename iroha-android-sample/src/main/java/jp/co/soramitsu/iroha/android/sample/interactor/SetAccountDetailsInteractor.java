@@ -23,9 +23,6 @@ import jp.co.soramitsu.iroha.android.sample.injection.ApplicationModule;
 import jp.co.soramitsu.iroha.java.IrohaAPI;
 import jp.co.soramitsu.iroha.java.TransactionBuilder;
 
-import static jp.co.soramitsu.iroha.android.sample.Constants.ACCOUNT_DETAILS;
-import static jp.co.soramitsu.iroha.android.sample.Constants.CONNECTION_TIMEOUT_SECONDS;
-import static jp.co.soramitsu.iroha.android.sample.Constants.DOMAIN_ID;
 
 public class SetAccountDetailsInteractor extends CompletableInteractor<String> {
 
@@ -48,7 +45,7 @@ public class SetAccountDetailsInteractor extends CompletableInteractor<String> {
             try {
                 KeyPair userKeys = preferenceUtils.retrieveKeys();
                 String username = preferenceUtils.retrieveUsername();
-                String domain = DOMAIN_ID;
+                String domain = preferenceUtils.retrieveDomain();
                 String USR = String.format("%s@%s",username,domain);
                 IrohaAPI irohaAPI = getIrohaAPI();
                 irohaAPI.transaction(

@@ -7,6 +7,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.math.BigInteger;
 import java.security.KeyPair;
+import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -22,12 +23,6 @@ import jp.co.soramitsu.iroha.android.sample.injection.ApplicationModule;
 import jp.co.soramitsu.iroha.java.IrohaAPI;
 import jp.co.soramitsu.iroha.java.Query;
 
-import static jp.co.soramitsu.iroha.android.sample.Constants.CONNECTION_TIMEOUT_SECONDS;
-import static jp.co.soramitsu.iroha.android.sample.Constants.CREATOR;
-import static jp.co.soramitsu.iroha.android.sample.Constants.DOMAIN_ID;
-import static jp.co.soramitsu.iroha.android.sample.Constants.PRIV_KEY;
-import static jp.co.soramitsu.iroha.android.sample.Constants.PUB_KEY;
-import static jp.co.soramitsu.iroha.android.sample.Constants.QUERY_COUNTER;
 
 public class GetAccountInteractor extends SingleInteractor<QryResponses.Account, String> {
 
@@ -50,16 +45,17 @@ public class GetAccountInteractor extends SingleInteractor<QryResponses.Account,
             try {
                 KeyPair userKeys = preferenceUtils.retrieveKeys();
                 String username = preferenceUtils.retrieveUsername();
-                String domain = DOMAIN_ID;
+                String domain = preferenceUtils.retrieveDomain();
                 String USR = String.format("%s@%s",username,domain);
                 IrohaAPI irohaAPI = getIrohaAPI();
-                Queries.Query q = Query.builder(USR, 1).getAccount(USR).buildSigned(userKeys);
+                Queries.Query q = Query.builder(USR, currentTime, 1).getAccount(USR).buildSigned(userKeys);
                 QryResponses.AccountResponse response = irohaAPI.query(q).getAccountResponse();
                 Log.d(USR, "Has account: " + response.hasAccount());
 
                 if (response.hasAccount()){
                     emitter.onSuccess(response.getAccount());
                 }
+
             }catch (Exception e){
                 emitter.onError(new Throwable("Failed to get Account"));
             }

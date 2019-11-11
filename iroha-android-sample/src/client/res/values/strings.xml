@@ -8,10 +8,13 @@
     <string name="deposit">Deposit</string>
     <string name="withdraw">Withdraw</string>
     <string name="scan_qr">ScanQR</string>
+    <string name="scan">Scan</string>
     <string name="registration_title">Registration Form</string>
     <string name="registration_subtitle">Blockchain technologies for business</string>
     <string name="button_register">Register</string>
     <string name="error_dialog_title">Failure</string>
+    <string name="info_dialog_title">Info</string>
+    <string name="username_not_yet_validated">Please verify the Account ID availability first</string>
     <string name="username_empty_error_dialog_message">Account ID can\'t be empty</string>
     <string name="username_already_exists_error_dialog_message">Account ID already exists</string>
     <string name="username_doesnt_exists">No such Account ID</string>
@@ -40,4 +43,8 @@
     <string name="birthdate_hint">Birth Date</string>
     <string name="nationality_hint">Nationality</string>
     <string name="national_id_hint">National ID Number</string>
+    <string name="ktp_hint">KTP Number</string>
+    <string name="bank_account_hint">Bank Account</string>
+    <string name="email_hint">E-Mail</string>
+    <string name="phone_hint">Phone Number</string>
 </resources>

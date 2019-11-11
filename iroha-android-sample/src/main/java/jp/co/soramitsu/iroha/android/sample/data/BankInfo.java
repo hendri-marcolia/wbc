@@ -7,10 +7,20 @@ import lombok.Setter;
 
 public class BankInfo {
 
+//    @Setter
+//    @Getter
+//    @SerializedName("bank_public_key")
+//    private String publicKey;
+
     @Setter
     @Getter
-    @SerializedName("bank_public_key")
-    private String publicKey;
+    @SerializedName("bank_account_id")
+    private String bankAccountId;
+
+    @Setter
+    @Getter
+    @SerializedName("domain")
+    private String bankDomain;
 
     public BankInfo() {}
 }

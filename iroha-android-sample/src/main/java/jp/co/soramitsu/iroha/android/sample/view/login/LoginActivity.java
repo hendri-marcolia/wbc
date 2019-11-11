@@ -17,6 +17,7 @@ import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
 
+import jp.co.soramitsu.iroha.android.sample.PreferencesUtil;
 import jp.co.soramitsu.iroha.android.sample.R;
 import jp.co.soramitsu.iroha.android.sample.SampleApplication;
 import jp.co.soramitsu.iroha.android.sample.databinding.ActivityLoginBinding;
@@ -35,6 +36,9 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
 
     @Inject
     LoginPresenter presenter;
+
+    @Inject
+    PreferencesUtil preferencesUtil;
 
     private Handler handler = new Handler();
     private Executor executor = command -> handler.post(command);
