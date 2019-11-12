@@ -3,6 +3,9 @@ package jp.co.soramitsu.iroha.android.sample.view.main.history;
 import androidx.lifecycle.ViewModelProviders;
 import android.text.format.DateUtils;
 
+import com.google.gson.Gson;
+import com.orm.SugarRecord;
+
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,6 +18,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import jp.co.soramitsu.iroha.android.sample.data.Transaction;
+import jp.co.soramitsu.iroha.android.sample.entity.TransactionEntity;
 import jp.co.soramitsu.iroha.android.sample.interactor.GetAccountTransactionsInteractor;
 import lombok.Setter;
 
@@ -37,16 +42,19 @@ public class HistoryPresenter {
     }
 
     void getTransactions() {
-        getAccountTransactionsInteractor.execute(
-                transactions -> {
-                    Collections.sort(transactions, (o1, o2) -> o2.date.compareTo(o1.date));
-                    transactionsViewModel.getTransactions().postValue(transformTransactions(transactions));
-                    fragment.finishRefresh();
-                },
-                throwable -> fragment.didError(throwable));
+//        getAccountTransactionsInteractor.execute(
+//                transactions -> {
+//                    Collections.sort(transactions, (o1, o2) -> o2.date.compareTo(o1.date));
+//                    transactionsViewModel.getTransactions().postValue();
+//                    fragment.finishRefresh();
+//                },
+//                throwable -> fragment.didError(throwable));
+        List<TransactionEntity> entities =  SugarRecord.listAll(TransactionEntity.class);
+        transactionsViewModel.getTransactions().postValue(transformTransactions(entities));
+        fragment.finishRefresh();
     }
 
-    private List transformTransactions(List<Transaction> transactions) {
+    private List transformTransactions(List<TransactionEntity> transactions) {
         if (transactions.isEmpty()) {
             return Collections.emptyList();
         }
@@ -69,25 +77,29 @@ public class HistoryPresenter {
         SimpleDateFormat headerDateFormat = new SimpleDateFormat("MMMM, dd", Locale.getDefault());
         SimpleDateFormat hoursDateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
-        String currentPrettyDate = getHeader(transactions.get(0).date, headerDateFormat,
+        String currentPrettyDate = getHeader(new Date(new Gson().fromJson(transactions.get(0).getTransactionPayload(),
+                jp.co.soramitsu.iroha.android.sample.data.Transaction.class).getTransactionPayload()
+                        .getPayload().getTimestamp()), headerDateFormat,
                 today, yesterday);
 
         listItems.add(currentPrettyDate);
-
-        for (Transaction transaction : transactions) {
-            if (!getHeader(transaction.date, headerDateFormat, today, yesterday)
+        Gson gson = new Gson();
+        for (TransactionEntity transactionEntity : transactions) {
+            Transaction transaction = gson.fromJson(transactionEntity.getTransactionPayload(), Transaction.class);
+            Date txDate = new Date(transaction.getTransactionPayload().getPayload().getTimestamp());
+            if (!getHeader(txDate, headerDateFormat, today, yesterday)
                     .equals(currentPrettyDate)) {
-                currentPrettyDate = getHeader(transaction.date, headerDateFormat,
+                currentPrettyDate = getHeader(txDate, headerDateFormat,
                         today, yesterday);
                 listItems.add(currentPrettyDate);
             }
 
-            BigDecimal amount = new BigDecimal(transaction.amount);
+            BigDecimal amount = new BigDecimal(transaction.getTransactionPayload().getPayload().getAmount());
             String prettyAmount = amount.toString();
 
             String prettyDate;
-            if (currentPrettyDate.equals("Today") && transaction.date.after(oneHourBefore)) {
-                long duration = new Date().getTime() - transaction.date.getTime();
+            if (currentPrettyDate.equals("Today") && txDate.after(oneHourBefore)) {
+                long duration = new Date().getTime() - txDate.getTime();
                 long diffInMinutes = TimeUnit.MILLISECONDS.toMinutes(duration);
                 if (diffInMinutes == 0) {
                     prettyDate = "just now";
@@ -95,11 +107,11 @@ public class HistoryPresenter {
                     prettyDate = diffInMinutes + " minutes ago";
                 }
             } else {
-                prettyDate = hoursDateFormat.format(transaction.date);
+                prettyDate = hoursDateFormat.format(txDate);
             }
 
 
-            TransactionVM vm = new TransactionVM(transaction.id, prettyDate, transaction.username, prettyAmount);
+            TransactionVM vm = new TransactionVM(transactionEntity.getId(), prettyDate, transaction.getAgentId(), prettyAmount, transaction.getTransactionType().name(), transactionEntity.isCommited() ? "SYNCED" : "Waiting");
 
             listItems.add(vm);
         }
@@ -119,5 +131,17 @@ public class HistoryPresenter {
     void onStop() {
         fragment = null;
         getAccountTransactionsInteractor.unsubscribe();
+    }
+
+    public void successSync(){
+        fragment.successSync();
+    }
+
+    public void showInfo(String msg) {
+        fragment.showInfo(msg);
+    }
+
+    public void showError(Throwable throwable){
+        fragment.showError(throwable);
     }
 }

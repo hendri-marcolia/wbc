@@ -5,13 +5,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+
+import com.google.gson.Gson;
+import com.orm.SugarRecord;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import jp.co.soramitsu.iroha.android.sample.R;
 import jp.co.soramitsu.iroha.android.sample.SampleApplication;
+import jp.co.soramitsu.iroha.android.sample.data.Transaction;
+import jp.co.soramitsu.iroha.android.sample.entity.TransactionEntity;
+import jp.co.soramitsu.iroha.android.sample.interactor.deposit.PerformSaveOfflineInteractor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,8 +32,14 @@ public class TransactionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Setter
     private List transactions;
 
-    TransactionsAdapter() {
+    PerformSaveOfflineInteractor performSaveOfflineInteractor;
+
+    HistoryPresenter presenter;
+
+    TransactionsAdapter(PerformSaveOfflineInteractor performSaveOfflineInteractor, HistoryPresenter presenter) {
+        this.performSaveOfflineInteractor = performSaveOfflineInteractor;
         this.transactions = new ArrayList<>();
+        this.presenter = presenter;
     }
 
     @NonNull
@@ -48,6 +63,26 @@ public class TransactionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             TransactionVM transaction = (TransactionVM) transactions.get(position);
             TransactionItem transactionItem = (TransactionItem) holder;
             transactionItem.username.setText(transaction.username);
+            transactionItem.type.setText(transaction.transactionType);
+            transactionItem.status.setText(transaction.transactionStatus);
+            if (transaction.transactionType.equals("OFFLINE") && !transaction.transactionStatus.equals("SYNCED")){
+                transactionItem.syncButton.setVisibility(View.VISIBLE);
+                transactionItem.syncButton.setEnabled(true);
+                transactionItem.syncButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        TransactionEntity entity = SugarRecord.findById(TransactionEntity.class, transaction.id);
+                        performSaveOfflineInteractor.execute(new Gson().fromJson(entity.getTransactionPayload(), Transaction.class), httpResult -> {
+                            entity.setCommited(true);
+                            entity.save();
+                            presenter.successSync();
+                            presenter.getTransactions();
+                        }, throwable -> {
+                            presenter.showError(throwable);
+                        });
+                    }
+                });
+            }else transactionItem.syncButton.setVisibility(View.GONE);
             if (transaction.prettyAmount.contains("-")) {
                 transactionItem.amount.setText("- " + transaction.prettyAmount.substring(1, transaction.prettyAmount.length()));
                 transactionItem.amount.setTextColor(SampleApplication.instance.getResources().getColor(R.color.text));
@@ -80,12 +115,18 @@ public class TransactionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         TextView username;
         TextView date;
         TextView amount;
+        TextView status;
+        TextView type;
+        Button syncButton;
 
         TransactionItem(View itemView) {
             super(itemView);
             username = itemView.findViewById(R.id.username);
             date = itemView.findViewById(R.id.date);
             amount = itemView.findViewById(R.id.amount);
+            status = itemView.findViewById(R.id.txStatus);
+            type = itemView.findViewById(R.id.txType);
+            syncButton = itemView.findViewById(R.id.btnSync);
         }
     }
 

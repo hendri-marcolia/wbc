@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import jp.co.soramitsu.iroha.android.sample.R;
 import jp.co.soramitsu.iroha.android.sample.SampleApplication;
 import jp.co.soramitsu.iroha.android.sample.databinding.FragmentHistoryBinding;
+import jp.co.soramitsu.iroha.android.sample.interactor.deposit.PerformSaveOfflineInteractor;
 import jp.co.soramitsu.iroha.android.sample.view.main.MainActivity;
 
 public class HistoryFragment extends Fragment implements HistoryView {
@@ -24,6 +25,9 @@ public class HistoryFragment extends Fragment implements HistoryView {
 
     @Inject
     HistoryPresenter presenter;
+
+    @Inject
+    PerformSaveOfflineInteractor performSaveOfflineInteractor;
 
     private TransactionsAdapter adapter;
 
@@ -55,8 +59,13 @@ public class HistoryFragment extends Fragment implements HistoryView {
     private void configureRecycler() {
         binding.transactions.setHasFixedSize(true);
         binding.transactions.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new TransactionsAdapter();
+        adapter = new TransactionsAdapter(performSaveOfflineInteractor, presenter);
         binding.transactions.setAdapter(adapter);
+    }
+
+    public void successSync(){
+        ((MainActivity)getActivity()).showInfo("Success sync Transaction");
+        ((MainActivity)getActivity()).refreshData(false);
     }
 
     @Override
@@ -79,6 +88,16 @@ public class HistoryFragment extends Fragment implements HistoryView {
     @Override
     public void didError(Throwable error) {
         binding.refresh.setRefreshing(false);
+        showError(error);
+    }
+
+
+    public void showInfo(String msg){
+        ((MainActivity) getActivity()).showInfo(msg);
+    }
+
+    public void showError(Throwable error){
         ((MainActivity) getActivity()).showError(error);
     }
+
 }

@@ -23,6 +23,7 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.orm.SugarRecord;
 
 import java.util.List;
 
@@ -39,6 +40,7 @@ import jp.co.soramitsu.iroha.android.sample.data.Payload;
 import jp.co.soramitsu.iroha.android.sample.data.Transaction;
 import jp.co.soramitsu.iroha.android.sample.databinding.FragmentDepositBinding;
 import jp.co.soramitsu.iroha.android.sample.databinding.FragmentScanBinding;
+import jp.co.soramitsu.iroha.android.sample.entity.TransactionEntity;
 import jp.co.soramitsu.iroha.android.sample.fragmentinterface.OnBackPressed;
 import jp.co.soramitsu.iroha.android.sample.view.main.MainActivity;
 
@@ -96,6 +98,14 @@ public class ScanFragment extends Fragment implements ScanView, OnBackPressed {
         binding.bottomSheet.setVisibility(View.VISIBLE);
         binding.screenBlocker.setVisibility(View.VISIBLE);
         binding.confAmount.setText("Transaction : " + (transaction.getTransactionType() == Transaction.TransactionType.ONLINE ? "Online" : "Offline"));
+        binding.saveTx.setVisibility((transaction.getTransactionType() == Transaction.TransactionType.ONLINE ? View.INVISIBLE : View.VISIBLE));
+        binding.saveTx.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new TransactionEntity(new Gson().toJson(transaction), false, false).save();
+                hideBottomSheet();
+            }
+        });
         BottomSheetBehavior.from(binding.bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
         getPendingTransaction(transaction);
     }

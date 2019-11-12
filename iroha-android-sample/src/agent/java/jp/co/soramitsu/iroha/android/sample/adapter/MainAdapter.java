@@ -22,7 +22,7 @@ public class MainAdapter extends FragmentPagerAdapter {
         } else if (position == 1) {
             return new Fragment();
         } else {
-            return new Fragment();
+            return new HistoryFragment();
         }
     }
 

@@ -87,7 +87,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             public void run() {
                 // AGENT SIMULATE LOGIN
                 if(Constants.PRIV_KEY.length() > 1){
-                    preferencesUtil.saveDomain("test6");
+                    preferencesUtil.saveDomain("test8");
                     preferencesUtil.saveKeys(Constants.PRIV_KEY);
                     preferencesUtil.saveUsername("agent1");
                 }

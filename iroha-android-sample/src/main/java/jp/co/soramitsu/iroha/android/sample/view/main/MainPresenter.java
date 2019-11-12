@@ -1,12 +1,16 @@
 package jp.co.soramitsu.iroha.android.sample.view.main;
 
 
+import com.orm.SugarRecord;
+
 import javax.inject.Inject;
 
 import jp.co.soramitsu.iroha.android.sample.MyUtils;
 import jp.co.soramitsu.iroha.android.sample.PreferencesUtil;
 import jp.co.soramitsu.iroha.android.sample.SampleApplication;
 import jp.co.soramitsu.iroha.android.sample.data.Account;
+import jp.co.soramitsu.iroha.android.sample.data.Transaction;
+import jp.co.soramitsu.iroha.android.sample.entity.TransactionEntity;
 import jp.co.soramitsu.iroha.android.sample.interactor.GetAccountBalanceInteractor;
 import jp.co.soramitsu.iroha.android.sample.interactor.GetAccountDetailsInteractor;
 import jp.co.soramitsu.iroha.android.sample.interactor.GetAccountInteractor;
@@ -74,6 +78,7 @@ public class MainPresenter {
 
     void logout() {
         preferencesUtil.clear();
+        SugarRecord.deleteAll(TransactionEntity.class);
         view.showLoginScreen();
     }
 

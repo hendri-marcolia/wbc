@@ -20,6 +20,7 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.orm.SugarRecord;
 
 import java.text.NumberFormat;
 import java.util.Currency;
@@ -138,11 +139,30 @@ public class DepositFragment extends Fragment implements DepositView, OnBackPres
                                                 {
                                                     ((MainActivity)getActivity()).hideProgress();
                                                     hideBottomSheet();
-                                                    new TransactionEntity(new Gson().toJson(transaction), false).save();
+                                                    new TransactionEntity(new Gson().toJson(transaction), true, true).save();
+                                                    ((MainActivity)getActivity()).refreshData(false);
                                                 }
                                             });
                                     break;
                                 case OFFLINE:
+                                    Long txId = new TransactionEntity(new Gson().toJson(transaction), false, false).save();
+                                    showInfo("Transaction success, The transaction will be synced when there is Internet connection available");
+                                    hideBottomSheet();
+                                    presenter.doDepositOffline(transaction, new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            showInfo("Transaction synced");
+                                            ((MainActivity) getActivity()).refreshData(false);
+                                            TransactionEntity tx = SugarRecord.findById(TransactionEntity.class, txId);
+                                            tx.setCommited(true);
+                                            tx.save();
+                                        }
+                                    }, new Runnable() {
+                                        @Override
+                                        public void run() {
+
+                                        }
+                                    });
                                     break;
                             }
                         }else {

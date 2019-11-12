@@ -92,6 +92,15 @@ public class DepositPresenter {
         return true;
     }
 
+    boolean doDepositOffline(Transaction transaction, Runnable runnable, Runnable runnable1){
+        performSaveOfflineInteractor.execute(transaction, httpResult -> {
+            runnable.run();
+        }, throwable -> {
+            runnable1.run();
+        });
+        return  true;
+    }
+
     boolean validateTransaction(Transaction transaction) throws Throwable{
         Payload payload = transaction.getTransactionPayload().getPayload();
         KeyPair keyPair = preferencesUtil.retrieveKeys();
