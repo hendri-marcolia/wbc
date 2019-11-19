@@ -153,7 +153,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
                     Toast.makeText(context, "QR invalid", Toast.LENGTH_LONG).show();
                 } else {
                     Intent intent = new Intent(this, RegistrationActivity.class);
-                    intent.putExtra("agentID", data);
+                    intent.putExtra("agentID", data.getData().toString());
                     startActivity(intent);
                 }
             }

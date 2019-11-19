@@ -112,6 +112,7 @@ public class RegistrationPresenter {
                     registration.setKtp(ktp);
                     registration.setFcmId("");
                     registration.setAccountPublicKey(Utils.toHex(keyPair.getPublic().getEncoded()));
+                    registration.setAgentID(agentId);
                     FirebaseInstanceId.getInstance().getInstanceId()
                             .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                                 @Override
