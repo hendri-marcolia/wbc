@@ -14,6 +14,7 @@ import jp.co.soramitsu.iroha.android.sample.PreferencesUtil;
 import jp.co.soramitsu.iroha.android.sample.data.Payload;
 import jp.co.soramitsu.iroha.android.sample.data.PerformSavePayload;
 import jp.co.soramitsu.iroha.android.sample.data.Transaction;
+import jp.co.soramitsu.iroha.android.sample.fragmentinterface.InteractorListener;
 import jp.co.soramitsu.iroha.android.sample.interactor.GenerateTransactionQRInteractor;
 import jp.co.soramitsu.iroha.android.sample.interactor.deposit.AddSignatoryInteractor;
 import jp.co.soramitsu.iroha.android.sample.interactor.deposit.CreateDepositTransactionInteractor;
@@ -71,17 +72,20 @@ public class DepositPresenter {
         this.generateQRInteractor.unsubscribe();
     }
 
-    boolean doDepositOnline(Transaction transaction, Runnable runnable){
+    boolean doDepositOnline(Transaction transaction, InteractorListener listener){
         fragment.showLoading();
         addSignatoryInteractor.execute(Ed25519Sha3.publicKeyFromBytes(MyUtils.stringToBytes(transaction.getAgentPublicKey())),
                 () -> {
                     createDepositTransactionInteractor.execute(transaction,
+                            val2 -> {
+                                listener.onNext(val2);
+                            },
                             () -> {
-                                fragment.showInfo("Success create Transaction,\nPlease wait for agent confirmation");
-                                runnable.run();
+                                if (listener != null)
+                                    listener.onComplete(transaction);
                             }, throwable -> {
-                                fragment.hideLoading();
-                                fragment.showError(throwable);
+                                if (listener != null)
+                                    listener.onError(throwable);
                             });
                 },throwable -> {
                     fragment.hideLoading();
@@ -92,11 +96,11 @@ public class DepositPresenter {
         return true;
     }
 
-    boolean doDepositOffline(Transaction transaction, Runnable runnable, Runnable runnable1){
+    boolean doDepositOffline(Transaction transaction, InteractorListener listener){
         performSaveOfflineInteractor.execute(transaction, httpResult -> {
-            runnable.run();
+            listener.onComplete(transaction);
         }, throwable -> {
-            runnable1.run();
+            listener.onError(throwable);
         });
         return  true;
     }

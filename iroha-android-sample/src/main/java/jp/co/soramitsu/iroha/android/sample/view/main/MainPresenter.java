@@ -9,8 +9,8 @@ import jp.co.soramitsu.iroha.android.sample.MyUtils;
 import jp.co.soramitsu.iroha.android.sample.PreferencesUtil;
 import jp.co.soramitsu.iroha.android.sample.SampleApplication;
 import jp.co.soramitsu.iroha.android.sample.data.Account;
-import jp.co.soramitsu.iroha.android.sample.data.Transaction;
 import jp.co.soramitsu.iroha.android.sample.entity.TransactionEntity;
+import jp.co.soramitsu.iroha.android.sample.interactor.GenerateQRInteractor;
 import jp.co.soramitsu.iroha.android.sample.interactor.GetAccountBalanceInteractor;
 import jp.co.soramitsu.iroha.android.sample.interactor.GetAccountDetailsInteractor;
 import jp.co.soramitsu.iroha.android.sample.interactor.GetAccountInteractor;
@@ -24,6 +24,7 @@ public class MainPresenter {
     private final GetAccountDetailsInteractor getAccountDetails;
     private final GetAccountInteractor getAccountInteractor;
     private final GetAccountBalanceInteractor getAccountBalanceInteractor;
+    private final GenerateQRInteractor generateQRInteractor;
 
     @Setter
     private MainView view;
@@ -33,12 +34,13 @@ public class MainPresenter {
                          SetAccountDetailsInteractor setAccountDetails,
                          GetAccountDetailsInteractor getAccountDetails,
                          GetAccountInteractor getAccountInteractor,
-                         GetAccountBalanceInteractor getAccountBalanceInteractor) {
+                         GetAccountBalanceInteractor getAccountBalanceInteractor, GenerateQRInteractor generateQRInteractor) {
         this.preferencesUtil = preferencesUtil;
         this.setAccountDetails = setAccountDetails;
         this.getAccountDetails = getAccountDetails;
         this.getAccountInteractor = getAccountInteractor;
         this.getAccountBalanceInteractor = getAccountBalanceInteractor;
+        this.generateQRInteractor = generateQRInteractor;
     }
 
     void onCreate() {
@@ -91,6 +93,17 @@ public class MainPresenter {
             view.showError(throwable);
             view.hideProgress();
         });
+    }
+
+    void generateUserQR(){
+        generateQRInteractor.execute(
+                preferencesUtil.retrieveUsername(),
+                bitmap -> {
+                    view.showProfileQr(bitmap);
+                }
+                , throwable -> {
+                    view.showError(throwable);
+                });
     }
 
     void onDestroy() {

@@ -39,13 +39,12 @@ public class GenerateQRInteractor extends SingleInteractor<Bitmap, String> {
     private final int SIZE = 500;
 
     @Override
-    protected Single<Bitmap> build(String amount) {
+    protected Single<Bitmap> build(String data) {
         return Single.create(emitter -> {
-            String username = preferenceUtils.retrieveUsername();
-            String qrText = username + "," + amount + "," + new Date().toString();
+
                         Map<EncodeHintType, String> hints = new HashMap<>();
             hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
-            QRCode qrCode = Encoder.encode(qrText, ErrorCorrectionLevel.H, hints);
+            QRCode qrCode = Encoder.encode(data, ErrorCorrectionLevel.H, hints);
             final ByteMatrix byteMatrix = qrCode.getMatrix();
             final int width = byteMatrix.getWidth();
             final int height = byteMatrix.getHeight();

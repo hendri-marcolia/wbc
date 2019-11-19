@@ -3,7 +3,11 @@ package jp.co.soramitsu.iroha.android.sample.view.main;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
+
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -16,6 +20,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
@@ -23,6 +28,7 @@ import java.net.ConnectException;
 
 import javax.inject.Inject;
 
+import jp.co.soramitsu.iroha.android.sample.BuildConfig;
 import jp.co.soramitsu.iroha.android.sample.Constants;
 import jp.co.soramitsu.iroha.android.sample.PreferencesUtil;
 import jp.co.soramitsu.iroha.android.sample.R;
@@ -82,7 +88,16 @@ public class MainActivity extends AppCompatActivity implements MainView, SwipeRe
                                     .setTextColor(getResources().getColor(R.color.iroha)));
                     alertDialog.show();
                 });
-
+        if(BuildConfig.FLAVOR.equals("agent")) {
+            RxView.clicks(binding.logo)
+                    .subscribe(v -> {
+                        presenter.generateUserQR();
+                    });
+            RxView.clicks(binding.screenBlocker)
+                    .subscribe(view -> {
+                        hideBottomSheet();
+                    });
+        }
         RxView.clicks(binding.bio)
                 .subscribe(v -> {
                     LayoutInflater inflater = LayoutInflater.from(this);
@@ -229,6 +244,37 @@ public class MainActivity extends AppCompatActivity implements MainView, SwipeRe
     protected void onDestroy() {
         super.onDestroy();
         presenter.onDestroy();
+    }
+
+    @Override
+    public void showProfileQr(Bitmap bitmap) {
+
+        binding.qrCodeImageView.setImageBitmap(bitmap);
+        binding.bottomSheet.setVisibility(View.VISIBLE);
+        binding.screenBlocker.setVisibility(View.VISIBLE);
+        BottomSheetBehavior.from(binding.bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
+    }
+
+    private boolean hideBottomSheet() {
+        if (BottomSheetBehavior.from(binding.bottomSheet).getState() == BottomSheetBehavior.STATE_EXPANDED) {
+            BottomSheetBehavior.from(binding.bottomSheet).setState(BottomSheetBehavior.STATE_COLLAPSED);
+            BottomSheetBehavior.from(binding.bottomSheet).setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+                @Override
+                public void onStateChanged(@NonNull View view, int i) {
+                    if (BottomSheetBehavior.STATE_COLLAPSED == i) {
+                        binding.bottomSheet.setVisibility(View.GONE);
+                        binding.screenBlocker.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override
+                public void onSlide(@NonNull View view, float v) {
+
+                }
+            });
+            return false;
+        }
+        return true;
     }
 
     @Override

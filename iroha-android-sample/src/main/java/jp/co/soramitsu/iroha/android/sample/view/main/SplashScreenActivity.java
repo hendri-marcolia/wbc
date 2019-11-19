@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import jp.co.soramitsu.iroha.android.sample.BuildConfig;
 import jp.co.soramitsu.iroha.android.sample.Constants;
 import jp.co.soramitsu.iroha.android.sample.PreferencesUtil;
 import jp.co.soramitsu.iroha.android.sample.SampleApplication;
@@ -86,7 +87,8 @@ public class SplashScreenActivity extends AppCompatActivity {
             @Override
             public void run() {
                 // AGENT SIMULATE LOGIN
-                if(Constants.PRIV_KEY.length() > 1){
+                //noinspection ConstantConditions
+                if(BuildConfig.FLAVOR.equals("agent")){
                     preferencesUtil.saveDomain("test8");
                     preferencesUtil.saveKeys(Constants.PRIV_KEY);
                     preferencesUtil.saveUsername("agent1");

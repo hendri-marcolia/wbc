@@ -39,9 +39,9 @@ public class GenerateTransactionQRInteractor extends SingleInteractor<Bitmap, Tr
     private final int SIZE = 1000;
 
     @Override
-    protected Single<Bitmap> build(Transaction amount) {
+    protected Single<Bitmap> build(Transaction t) {
         return Single.create(emitter -> {
-            String qrText = new Gson().toJson(amount);
+            String qrText = new Gson().toJson(t);
                         Map<EncodeHintType, String> hints = new HashMap<>();
             hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
             QRCode qrCode = Encoder.encode(qrText, ErrorCorrectionLevel.L, hints);

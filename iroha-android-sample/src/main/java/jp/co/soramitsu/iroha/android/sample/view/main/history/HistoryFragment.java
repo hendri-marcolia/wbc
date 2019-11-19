@@ -91,6 +91,12 @@ public class HistoryFragment extends Fragment implements HistoryView {
         showError(error);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(!getUserVisibleHint())return;
+        presenter.getTransactions();
+    }
 
     public void showInfo(String msg){
         ((MainActivity) getActivity()).showInfo(msg);
@@ -100,4 +106,10 @@ public class HistoryFragment extends Fragment implements HistoryView {
         ((MainActivity) getActivity()).showError(error);
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (!isVisibleToUser && isResumed() && presenter != null)
+            onResume();
+    }
 }

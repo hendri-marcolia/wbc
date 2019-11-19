@@ -102,7 +102,8 @@ public class ScanFragment extends Fragment implements ScanView, OnBackPressed {
         binding.saveTx.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new TransactionEntity(new Gson().toJson(transaction), false, false).save();
+                //Save pending tx here ( we only need userID)
+                //new TransactionEntity(new Gson().toJson(transaction), false, false).save();
                 hideBottomSheet();
             }
         });

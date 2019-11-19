@@ -67,14 +67,14 @@ public class RegistrationPresenter {
         });
     }
 
-    public void accountInvalidate(){
+    public void accountInvalidate() {
         this.isVerified = false;
     }
 
-    public void createAccount(String accountId, String fullName, String ktp, String bankAccount) {
+    public void createAccount(String agentId, String accountId, String fullName, String ktp, String bankAccount) {
         boolean result = true;
 
-        if (!isVerified){
+        if (!isVerified) {
             view.setAccountIdValidation(false, SampleApplication.instance.getText(R.string.username_not_yet_validated).toString());
             result = false;
         }
@@ -130,19 +130,20 @@ public class RegistrationPresenter {
                                     createAccountInteractor.execute(registration, registrationResult -> {
                                         if (registrationResult.getHttpResult() == 200) {
 
-                                            grantPermissionInteractor.execute(new UglyPairing(accountId, keyPair, registrationResult.getBankInfo()), () -> {
-                                                validateAccountInteractor.execute(new Validate(accountId), validateResult ->{
-                                                    preferencesUtil.saveUsername(accountId);
-                                                    preferencesUtil.saveKeys(Utils.toHex(keyPair.getPrivate().getEncoded()));
-                                                    preferencesUtil.saveDomain(registrationResult.getBankInfo().getBankDomain());
-                                                    preferencesUtil.saveAdminId(registrationResult.getBankInfo().getBankAccountId());
-                                                    view.openMainView();
-                                                }, throwable -> {
-                                                    view.showError(throwable);
-                                                });
-                                            }, throwable -> {
-                                                view.showError(throwable);
-                                            });
+                                            grantPermissionInteractor.execute(new UglyPairing(accountId, keyPair, registrationResult.getBankInfo()),
+                                                    () -> {
+                                                        validateAccountInteractor.execute(new Validate(accountId), validateResult -> {
+                                                            preferencesUtil.saveUsername(accountId);
+                                                            preferencesUtil.saveKeys(Utils.toHex(keyPair.getPrivate().getEncoded()));
+                                                            preferencesUtil.saveDomain(registrationResult.getBankInfo().getBankDomain());
+                                                            preferencesUtil.saveAdminId(registrationResult.getBankInfo().getBankAccountId());
+                                                            view.openMainView();
+                                                        }, throwable -> {
+                                                            view.showError(throwable);
+                                                        });
+                                                    }, throwable -> {
+                                                        view.showError(throwable);
+                                                    });
                                         } else {
                                             // error
                                             view.showError(new Throwable("Failed to create account, " + registrationResult.getMessage()));

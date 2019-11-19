@@ -70,13 +70,13 @@ public class ScanPresenter {
                 Logger.e(throwable.getMessage());
                 fragment.showError(throwable);
             });
-        }catch (Throwable e){
+        } catch (Throwable e) {
             fragment.showError(e);
         }
 
     }
 
-    void doScanQR(){
+    void doScanQR() {
         Intent i = new Intent(fragment.getActivity(), QRScannerActivity.class);
         fragment.startActivityForResult(i, REQUEST_CODE_QR_SCAN);
     }
@@ -89,22 +89,25 @@ public class ScanPresenter {
     List<TransactionOuterClass.Transaction> getPendingTransaction(Transaction transaction) {
         String accountId = transaction.getTransactionPayload().getPayload().getCustomerId();
         getPendingTransactionInteractor.execute(accountId, transactions -> {
-            agentSignPendingTransactionInteractor.execute(transactions, () -> {
-                // Perform Save
-                PerformSavePayload payload = new PerformSavePayload();
-                payload.setAmount(String.valueOf(transaction.getTransactionPayload().getPayload().getAmount()));
-                payload.setAgentId(transaction.getAgentId());
-                payload.setAgentPublicKey(transaction.getAgentPublicKey());
-                payload.setAccountId(transaction.getTransactionPayload().getPayload().getCustomerId());
-                payload.setAccountPublicKey(transaction.getAgentPublicKey());
-                agentPerformSaveOnlineInteractor.execute(payload, httpResult -> {
-                    fragment.showInfo("Success Sign the transaction for account : " +accountId );
-                }, throwable -> {
-                    fragment.showError(throwable);
-                });
-            }, throwable -> {
-                fragment.showError(throwable);
-            });
+            agentSignPendingTransactionInteractor.execute(transactions, o -> {
+
+                    },
+                    () -> {
+                        // Perform Save
+                        PerformSavePayload payload = new PerformSavePayload();
+                        payload.setAmount(String.valueOf(transaction.getTransactionPayload().getPayload().getAmount()));
+                        payload.setAgentId(transaction.getAgentId());
+                        payload.setAgentPublicKey(transaction.getAgentPublicKey());
+                        payload.setAccountId(transaction.getTransactionPayload().getPayload().getCustomerId());
+                        payload.setAccountPublicKey(transaction.getAgentPublicKey());
+                        agentPerformSaveOnlineInteractor.execute(payload, httpResult -> {
+                            fragment.showInfo("Success Sign the transaction for account : " + accountId);
+                        }, throwable -> {
+                            fragment.showError(throwable);
+                        });
+                    }, throwable -> {
+                        fragment.showError(throwable);
+                    });
         }, throwable -> {
             if (throwable instanceof EmptyStackException)
                 fragment.getPendingTransaction(transaction);
@@ -114,7 +117,7 @@ public class ScanPresenter {
         return null;
     }
 
-    boolean validateTransaction(Transaction transaction, boolean validateAgent) throws Throwable{
+    boolean validateTransaction(Transaction transaction, boolean validateAgent) throws Throwable {
         Payload payload = transaction.getTransactionPayload().getPayload();
         KeyPair agentkeyPair = preferencesUtil.retrieveKeys();
         PublicKey customerPublicKey = Ed25519Sha3.publicKeyFromBytes(MyUtils.stringToBytes(transaction.getTransactionPayload().getCustomerPublicKey()));
@@ -122,15 +125,15 @@ public class ScanPresenter {
             MyUtils.verify(payload,
                     MyUtils.stringToBytes(transaction.getTransactionPayload().getCustomerSigning()),
                     customerPublicKey);
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new Throwable("Failed to verify payload, " + e.getMessage());
         }
         // verify agent signing
-        if (!validateAgent) return  true;
+        if (!validateAgent) return true;
         try {
             if (transaction.getAgentId() != null && transaction.getAgentId().length() > 0 &&
-                transaction.getAgentPublicKey() != null && transaction.getAgentPublicKey().length() > 0 &&
-                transaction.getAgentSinging() != null && transaction.getAgentSinging() != null){
+                    transaction.getAgentPublicKey() != null && transaction.getAgentPublicKey().length() > 0 &&
+                    transaction.getAgentSinging() != null && transaction.getAgentSinging() != null) {
                 String tempSigning = transaction.getAgentSinging();
                 transaction.setAgentSinging(null);
                 MyUtils.verify(transaction,
@@ -138,9 +141,9 @@ public class ScanPresenter {
                         agentkeyPair.getPublic()
                 );
                 transaction.setAgentSinging(tempSigning);
-            }else throw new Exception("Agent signing missing");
-        }catch (Exception e) {
-            throw new Throwable("Failed to verify agent signing, " +e.getMessage());
+            } else throw new Exception("Agent signing missing");
+        } catch (Exception e) {
+            throw new Throwable("Failed to verify agent signing, " + e.getMessage());
         }
 
 

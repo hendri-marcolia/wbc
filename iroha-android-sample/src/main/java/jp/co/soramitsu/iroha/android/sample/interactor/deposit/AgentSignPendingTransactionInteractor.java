@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.reactivex.Completable;
+import io.reactivex.Observable;
 import io.reactivex.Scheduler;
 import iroha.protocol.Endpoint;
 import iroha.protocol.TransactionOuterClass;
@@ -19,15 +20,17 @@ import jp.co.soramitsu.iroha.android.sample.PreferencesUtil;
 import jp.co.soramitsu.iroha.android.sample.data.Transaction;
 import jp.co.soramitsu.iroha.android.sample.injection.ApplicationModule;
 import jp.co.soramitsu.iroha.android.sample.interactor.CompletableInteractor;
+import jp.co.soramitsu.iroha.android.sample.interactor.ObservableInteractor;
 import jp.co.soramitsu.iroha.java.IrohaAPI;
 import jp.co.soramitsu.iroha.java.TransactionBuilder;
+import jp.co.soramitsu.iroha.java.TransactionStatusObserver;
 import jp.co.soramitsu.iroha.java.Utils;
 import jp.co.soramitsu.iroha.java.subscription.WaitForTerminalStatus;
 
 import static jp.co.soramitsu.iroha.java.Utils.getProtoBatchHashesHex;
 
 
-public class AgentSignPendingTransactionInteractor extends CompletableInteractor<List<TransactionOuterClass.Transaction>> {
+public class AgentSignPendingTransactionInteractor extends ObservableInteractor<List<TransactionOuterClass.Transaction>> {
 
     private final PreferencesUtil preferenceUtils;
 
@@ -41,8 +44,8 @@ public class AgentSignPendingTransactionInteractor extends CompletableInteractor
 
 
     @Override
-    protected Completable build(List<TransactionOuterClass.Transaction> transactions) {
-        return Completable.create(emitter -> {
+    protected Observable build(List<TransactionOuterClass.Transaction> transactions) {
+        return Observable.create(emitter -> {
             try {
                 String username = preferenceUtils.retrieveUsername();
                 KeyPair userKeys = preferenceUtils.retrieveKeys();
@@ -69,22 +72,18 @@ public class AgentSignPendingTransactionInteractor extends CompletableInteractor
                 AtomicInteger txCount = new AtomicInteger();
                 for(TransactionOuterClass.Transaction tx : atomicBatch) {
                     waiter.subscribe(irohaAPI, Utils.hash(tx))
-                            .subscribe(toriiResponse -> {
-                                if (toriiResponse.getTxStatus() == Endpoint.TxStatus.COMMITTED ||
-                                        toriiResponse.getTxStatus() == Endpoint.TxStatus.STATELESS_VALIDATION_SUCCESS ||
-                                        toriiResponse.getTxStatus() == Endpoint.TxStatus.STATEFUL_VALIDATION_SUCCESS ||
-                                        toriiResponse.getTxStatus() == Endpoint.TxStatus.ENOUGH_SIGNATURES_COLLECTED ||
-                                        toriiResponse.getTxStatus() == Endpoint.TxStatus.MST_PENDING){
-                                    if (toriiResponse.getTxStatus() == Endpoint.TxStatus.COMMITTED  || toriiResponse.getTxStatus() == Endpoint.TxStatus.MST_PENDING)
-                                        if (txCount.incrementAndGet() == transactions.size()){
-                                            if (emitter != null)
-                                                emitter.onComplete();
-                                        }
-                                }
-                                else
-                                    if (emitter!= null)
-                                    emitter.onError(new RuntimeException("Transaction Failed , TxStatus = " + toriiResponse.getTxStatus()));
-                            });
+                            .subscribe(
+                                    TransactionStatusObserver.builder()
+                                    .onMstPending(toriiResponse -> {
+                                        emitter.onNext(toriiResponse);
+                                    })
+                                    .onTransactionCommitted(toriiResponse -> {
+                                        emitter.onComplete();
+                                    })
+                                    .onError(throwable -> {
+                                        emitter.onError(throwable);
+                                    }).build()
+                            );
                 }
 
 

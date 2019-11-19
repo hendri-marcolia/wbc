@@ -29,11 +29,12 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
 
     @Inject
     RegistrationPresenter presenter;
+    private static String agentID;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        agentID = getIntent().getStringExtra("agentID");
         binding = DataBindingUtil.setContentView(this, R.layout.activity_registration);
         SampleApplication.instance.getApplicationComponent().inject(this);
 
@@ -50,7 +51,7 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
             String fullName = binding.fullnameText.getText().toString();
             String ktp = binding.ktpText.getText().toString();
             String bankAccount = binding.bankAccountText.getText().toString();
-            presenter.createAccount(accountId, fullName, ktp, bankAccount);
+            presenter.createAccount(agentID, accountId, fullName, ktp, bankAccount);
         });
 
         binding.buttonCheckId.setOnClickListener( v -> {

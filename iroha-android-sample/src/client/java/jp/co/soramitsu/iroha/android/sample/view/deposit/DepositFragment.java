@@ -42,6 +42,7 @@ import jp.co.soramitsu.iroha.android.sample.data.PerformSavePayload;
 import jp.co.soramitsu.iroha.android.sample.data.Transaction;
 import jp.co.soramitsu.iroha.android.sample.databinding.FragmentDepositBinding;
 import jp.co.soramitsu.iroha.android.sample.entity.TransactionEntity;
+import jp.co.soramitsu.iroha.android.sample.fragmentinterface.InteractorListener;
 import jp.co.soramitsu.iroha.android.sample.fragmentinterface.OnBackPressed;
 import jp.co.soramitsu.iroha.android.sample.view.main.MainActivity;
 
@@ -132,35 +133,56 @@ public class DepositFragment extends Fragment implements DepositView, OnBackPres
                         if(presenter.validateTransaction(transaction)){
                             switch (transaction.getTransactionType()){
                                 case ONLINE:
-                                    presenter.doDepositOnline(transaction,
-                                            new Runnable() {
-                                                @Override
-                                                public void run()
-                                                {
-                                                    ((MainActivity)getActivity()).hideProgress();
-                                                    hideBottomSheet();
-                                                    new TransactionEntity(new Gson().toJson(transaction), true, true).save();
-                                                    ((MainActivity)getActivity()).refreshData(false);
-                                                }
-                                            });
+                                    presenter.doDepositOnline(transaction, new InteractorListener() {
+                                        long id1 = 0;
+                                        @Override
+                                        public void onNext(Object object) {
+                                            ((MainActivity)getActivity()).hideProgress();
+                                            hideBottomSheet();
+                                            id1 = new TransactionEntity(new Gson().toJson(transaction), false, true).save();
+                                            showInfo("Success create Transaction,\nPlease wait for agent confirmation");
+                                        }
+
+                                        @Override
+                                        public void onComplete(Object o) {
+                                            showInfo("Transaction successfully synced");
+                                            TransactionEntity t =  TransactionEntity.findById(TransactionEntity.class, id1);
+                                            if (t != null){
+                                                t.setCommited(true);
+                                                t.save();
+                                            }
+                                            ((MainActivity)getActivity()).refreshData(false);
+                                        }
+
+                                        @Override
+                                        public void onError(Throwable throwable) {
+                                            hideLoading();
+                                            showError(throwable);
+                                        }
+                                    });
                                     break;
                                 case OFFLINE:
                                     Long txId = new TransactionEntity(new Gson().toJson(transaction), false, false).save();
                                     showInfo("Transaction success, The transaction will be synced when there is Internet connection available");
                                     hideBottomSheet();
-                                    presenter.doDepositOffline(transaction, new Runnable() {
+                                    presenter.doDepositOffline(transaction, new InteractorListener() {
                                         @Override
-                                        public void run() {
+                                        public void onNext(Object object) {
+
+                                        }
+
+                                        @Override
+                                        public void onComplete(Object o) {
                                             showInfo("Transaction synced");
                                             ((MainActivity) getActivity()).refreshData(false);
                                             TransactionEntity tx = SugarRecord.findById(TransactionEntity.class, txId);
                                             tx.setCommited(true);
                                             tx.save();
                                         }
-                                    }, new Runnable() {
-                                        @Override
-                                        public void run() {
 
+                                        @Override
+                                        public void onError(Throwable throwable) {
+                                            showError(throwable);
                                         }
                                     });
                                     break;
