@@ -23,6 +23,8 @@ public class PreferencesUtil {
     public static final String SHARED_PREFERENCES_FILE = "shared_preferences_file";
     @VisibleForTesting
     public static final String SAVED_USERNAME = "saved_username";
+    public static final String SAVED_DOMAIN = "saved_domain";
+    public static final String SAVED_ADMIN_ID = "saved_admin_id";
     private static final String SAVED_PRIVATE_KEY = "saved_private_key";
     private static final String SAVED_PUBLIC_KEY = "saved_public_key";
 
@@ -42,6 +44,18 @@ public class PreferencesUtil {
         return preferences.getString(SAVED_USERNAME, "");
     }
 
+    public void saveDomain(String domain) {
+        preferences.edit().putString(SAVED_DOMAIN, domain).apply();
+    }
+
+    public String retrieveDomain() { return preferences.getString(SAVED_DOMAIN, "");};
+
+    public void saveAdminId(String adminId) {
+        preferences.edit().putString(SAVED_ADMIN_ID, adminId).apply();
+    }
+
+    public String retrieveAdminId() { return preferences.getString(SAVED_ADMIN_ID, "");};
+
     public void saveKeys(String privateKey) {
         preferences.edit().putString(SAVED_PRIVATE_KEY, privateKey).apply();
     }
@@ -49,10 +63,7 @@ public class PreferencesUtil {
     public KeyPair retrieveKeys() {
         try {
             String PRV_KEY = preferences.getString(SAVED_PRIVATE_KEY, "");
-            PrivateKey mPrivk = Ed25519Sha3.privateKeyFromBytes(DatatypeConverter.parseHexBinary(PRV_KEY));
-            EdDSAPrivateKey privk = (EdDSAPrivateKey) mPrivk;
-            EdDSAPublicKey publicKey = new EdDSAPublicKey(new EdDSAPublicKeySpec(privk.getAbyte(), EdDSANamedCurveTable.getByName("Ed25519")));
-            return new KeyPair(publicKey, privk);
+            return  MyUtils.keyPairFromPrivate(MyUtils.privateKeyFromString(PRV_KEY));
         }catch (Exception e){
             return null;
         }

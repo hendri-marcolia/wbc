@@ -31,6 +31,63 @@
             tools:text="@tools:sample/full_names" />
 
         <TextView
+            android:id="@+id/amount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:text="@{transaction.prettyAmount}"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@id/date"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/username"
+            tools:text="+1000"
+            tools:textColor="@color/positiveAmount" />
+
+        <TextView
+            android:id="@+id/txType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="4dp"
+            android:text="@{transaction.transactionType}"
+            android:textColor="@color/text"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/username"
+            tools:text="ONLINE" />
+        <TextView
+            android:id="@+id/txStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="4dp"
+            android:text="@{transaction.transactionType}"
+            android:textColor="@color/text"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/txType"
+            app:layout_constraintTop_toBottomOf="@id/username"
+            tools:text="NOT SYCNED" />
+        <Button
+            android:id="@+id/btnSync"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="4dp"
+            android:enabled="true"
+            android:text="Sync"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/txStatus"
+            app:layout_constraintTop_toBottomOf="@id/username"
+            />
+        <TextView
             android:id="@+id/date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -44,20 +101,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/username"
+            app:layout_constraintTop_toBottomOf="@id/txType"
             tools:text="2 min ago" />
-
-        <TextView
-            android:id="@+id/amount"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="32dp"
-            android:text="@{transaction.prettyAmount}"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@id/date"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/username"
-            tools:text="+1000"
-            tools:textColor="@color/positiveAmount" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

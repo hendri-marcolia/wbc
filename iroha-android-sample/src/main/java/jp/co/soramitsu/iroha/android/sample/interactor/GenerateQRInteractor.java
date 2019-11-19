@@ -11,6 +11,7 @@ import com.google.zxing.qrcode.encoder.ByteMatrix;
 import com.google.zxing.qrcode.encoder.Encoder;
 import com.google.zxing.qrcode.encoder.QRCode;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,11 +23,6 @@ import io.reactivex.Single;
 import jp.co.soramitsu.iroha.android.sample.PreferencesUtil;
 import jp.co.soramitsu.iroha.android.sample.injection.ApplicationModule;
 
-import static jp.co.soramitsu.iroha.android.sample.Constants.CONNECTION_TIMEOUT_SECONDS;
-import static jp.co.soramitsu.iroha.android.sample.Constants.CREATOR;
-import static jp.co.soramitsu.iroha.android.sample.Constants.DOMAIN_ID;
-import static jp.co.soramitsu.iroha.android.sample.Constants.PRIV_KEY;
-import static jp.co.soramitsu.iroha.android.sample.Constants.PUB_KEY;
 
 public class GenerateQRInteractor extends SingleInteractor<Bitmap, String> {
 
@@ -43,13 +39,12 @@ public class GenerateQRInteractor extends SingleInteractor<Bitmap, String> {
     private final int SIZE = 500;
 
     @Override
-    protected Single<Bitmap> build(String amount) {
+    protected Single<Bitmap> build(String data) {
         return Single.create(emitter -> {
-            String username = preferenceUtils.retrieveUsername();
-            String qrText = username + "," + amount;
+
                         Map<EncodeHintType, String> hints = new HashMap<>();
             hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
-            QRCode qrCode = Encoder.encode(qrText, ErrorCorrectionLevel.H, hints);
+            QRCode qrCode = Encoder.encode(data, ErrorCorrectionLevel.H, hints);
             final ByteMatrix byteMatrix = qrCode.getMatrix();
             final int width = byteMatrix.getWidth();
             final int height = byteMatrix.getHeight();

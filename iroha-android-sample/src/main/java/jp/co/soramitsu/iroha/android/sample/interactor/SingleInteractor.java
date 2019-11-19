@@ -6,7 +6,7 @@ import io.reactivex.functions.Consumer;
 
 public abstract class SingleInteractor<ResultType, ParameterType> extends Interactor {
 
-    SingleInteractor(Scheduler jobScheduler, Scheduler uiScheduler) {
+    protected SingleInteractor(Scheduler jobScheduler, Scheduler uiScheduler) {
         super(jobScheduler, uiScheduler);
     }
 

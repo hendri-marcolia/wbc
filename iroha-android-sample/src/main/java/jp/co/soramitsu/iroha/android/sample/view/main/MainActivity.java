@@ -3,11 +3,14 @@ package jp.co.soramitsu.iroha.android.sample.view.main;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
+
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+
+import android.graphics.Bitmap;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AlertDialog;
@@ -17,6 +20,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
@@ -24,15 +28,15 @@ import java.net.ConnectException;
 
 import javax.inject.Inject;
 
+import jp.co.soramitsu.iroha.android.sample.BuildConfig;
 import jp.co.soramitsu.iroha.android.sample.Constants;
 import jp.co.soramitsu.iroha.android.sample.PreferencesUtil;
 import jp.co.soramitsu.iroha.android.sample.R;
 import jp.co.soramitsu.iroha.android.sample.SampleApplication;
+import jp.co.soramitsu.iroha.android.sample.adapter.MainAdapter;
 import jp.co.soramitsu.iroha.android.sample.databinding.ActivityMainBinding;
+import jp.co.soramitsu.iroha.android.sample.fragmentinterface.OnBackPressed;
 import jp.co.soramitsu.iroha.android.sample.view.login.LoginActivity;
-import jp.co.soramitsu.iroha.android.sample.view.main.history.HistoryFragment;
-import jp.co.soramitsu.iroha.android.sample.view.main.receive.ReceiveFragment;
-import jp.co.soramitsu.iroha.android.sample.view.main.send.SendFragment;
 
 public class MainActivity extends AppCompatActivity implements MainView, SwipeRefreshLayout.OnRefreshListener {
 
@@ -64,14 +68,6 @@ public class MainActivity extends AppCompatActivity implements MainView, SwipeRe
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        // test
-        String username = preferencesUtil.retrieveUsername();
-        if (username.length()<1){
-            preferencesUtil.saveUsername("admin");
-            preferencesUtil.saveKeys("cded824a3b0fc1de4e0a8e48d8d7c3cf26944ea396dce2743dcee4ae95c62e51");
-        }
-        // test
-
         createProgressDialog();
         configureRefreshLayout();
 
@@ -92,7 +88,16 @@ public class MainActivity extends AppCompatActivity implements MainView, SwipeRe
                                     .setTextColor(getResources().getColor(R.color.iroha)));
                     alertDialog.show();
                 });
-
+        if(BuildConfig.FLAVOR.equals("agent")) {
+            RxView.clicks(binding.logo)
+                    .subscribe(v -> {
+                        presenter.generateUserQR();
+                    });
+            RxView.clicks(binding.screenBlocker)
+                    .subscribe(view -> {
+                        hideBottomSheet();
+                    });
+        }
         RxView.clicks(binding.bio)
                 .subscribe(v -> {
                     LayoutInflater inflater = LayoutInflater.from(this);
@@ -138,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements MainView, SwipeRe
     }
 
     private void setupViewPager() {
-        Adapter adapter = new Adapter(getSupportFragmentManager());
+        MainAdapter adapter = new MainAdapter(getSupportFragmentManager());
         binding.content.setAdapter(adapter);
 
         binding.content.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -209,6 +214,22 @@ public class MainActivity extends AppCompatActivity implements MainView, SwipeRe
     }
 
     @Override
+    public void showInfo(String info) {
+        hideRefresh();
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.info_dialog_title))
+                .setMessage(
+                        info
+                )
+                .setCancelable(true)
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+
+                })
+                .create();
+        alertDialog.show();
+    }
+
+    @Override
     public void hideRefresh() {
 //        binding.swiperefresh.setRefreshing(false);
         swipeLayout.setRefreshing(false);
@@ -217,7 +238,43 @@ public class MainActivity extends AppCompatActivity implements MainView, SwipeRe
     @Override
     public void onStop() {
         super.onStop();
-        presenter.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
+    }
+
+    @Override
+    public void showProfileQr(Bitmap bitmap) {
+
+        binding.qrCodeImageView.setImageBitmap(bitmap);
+        binding.bottomSheet.setVisibility(View.VISIBLE);
+        binding.screenBlocker.setVisibility(View.VISIBLE);
+        BottomSheetBehavior.from(binding.bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
+    }
+
+    private boolean hideBottomSheet() {
+        if (BottomSheetBehavior.from(binding.bottomSheet).getState() == BottomSheetBehavior.STATE_EXPANDED) {
+            BottomSheetBehavior.from(binding.bottomSheet).setState(BottomSheetBehavior.STATE_COLLAPSED);
+            BottomSheetBehavior.from(binding.bottomSheet).setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+                @Override
+                public void onStateChanged(@NonNull View view, int i) {
+                    if (BottomSheetBehavior.STATE_COLLAPSED == i) {
+                        binding.bottomSheet.setVisibility(View.GONE);
+                        binding.screenBlocker.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override
+                public void onSlide(@NonNull View view, float v) {
+
+                }
+            });
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -237,37 +294,12 @@ public class MainActivity extends AppCompatActivity implements MainView, SwipeRe
         presenter.updateData(true);
     }
 
-    public static class Adapter extends FragmentPagerAdapter {
-
-        Adapter(FragmentManager manager) {
-            super(manager);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            if (position == 0) {
-                return new SendFragment();
-            } else if (position == 1) {
-                return new ReceiveFragment();
-            } else {
-                return new HistoryFragment();
-            }
-        }
-
-        @Override
-        public int getCount() {
-            return 3;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            if (position == 0) {
-                return "SEND";
-            } else if (position == 1) {
-                return "RECEIVE";
-            } else {
-                return "HISTORY";
-            }
-        }
+    @Override
+    public void onBackPressed() {
+        Fragment fragment = ((MainAdapter)binding.content.getAdapter()).getItem(binding.content.getCurrentItem());
+        if (fragment instanceof OnBackPressed) {
+            if(((OnBackPressed) fragment).onBackPressed()) super.onBackPressed();
+        }else
+        super.onBackPressed();
     }
 }

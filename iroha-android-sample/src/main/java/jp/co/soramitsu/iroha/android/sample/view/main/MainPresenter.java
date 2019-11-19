@@ -1,11 +1,16 @@
 package jp.co.soramitsu.iroha.android.sample.view.main;
 
 
+import com.orm.SugarRecord;
+
 import javax.inject.Inject;
 
+import jp.co.soramitsu.iroha.android.sample.MyUtils;
 import jp.co.soramitsu.iroha.android.sample.PreferencesUtil;
 import jp.co.soramitsu.iroha.android.sample.SampleApplication;
 import jp.co.soramitsu.iroha.android.sample.data.Account;
+import jp.co.soramitsu.iroha.android.sample.entity.TransactionEntity;
+import jp.co.soramitsu.iroha.android.sample.interactor.GenerateQRInteractor;
 import jp.co.soramitsu.iroha.android.sample.interactor.GetAccountBalanceInteractor;
 import jp.co.soramitsu.iroha.android.sample.interactor.GetAccountDetailsInteractor;
 import jp.co.soramitsu.iroha.android.sample.interactor.GetAccountInteractor;
@@ -19,6 +24,7 @@ public class MainPresenter {
     private final GetAccountDetailsInteractor getAccountDetails;
     private final GetAccountInteractor getAccountInteractor;
     private final GetAccountBalanceInteractor getAccountBalanceInteractor;
+    private final GenerateQRInteractor generateQRInteractor;
 
     @Setter
     private MainView view;
@@ -28,12 +34,13 @@ public class MainPresenter {
                          SetAccountDetailsInteractor setAccountDetails,
                          GetAccountDetailsInteractor getAccountDetails,
                          GetAccountInteractor getAccountInteractor,
-                         GetAccountBalanceInteractor getAccountBalanceInteractor) {
+                         GetAccountBalanceInteractor getAccountBalanceInteractor, GenerateQRInteractor generateQRInteractor) {
         this.preferencesUtil = preferencesUtil;
         this.setAccountDetails = setAccountDetails;
         this.getAccountDetails = getAccountDetails;
         this.getAccountInteractor = getAccountInteractor;
         this.getAccountBalanceInteractor = getAccountBalanceInteractor;
+        this.generateQRInteractor = generateQRInteractor;
     }
 
     void onCreate() {
@@ -55,15 +62,15 @@ public class MainPresenter {
                             },
                             throwable -> view.showError(throwable)
                     );
-//                    getAccountBalanceInteractor.execute(
-//                            balance -> {
-//                                if (fromRefresh) {
-//                                    view.hideRefresh();
-//                                }
-//                                view.setAccountBalance(balance + " IRH");
-//                                SampleApplication.instance.account.setBalance(Long.parseLong(balance));
-//                            },
-//                            throwable -> view.showError(throwable));
+                    getAccountBalanceInteractor.execute(
+                            balance -> {
+                                if (fromRefresh) {
+                                    view.hideRefresh();
+                                }
+                                view.setAccountBalance(MyUtils.formatIDR(balance));
+                                SampleApplication.instance.account.setBalance(balance);
+                            },
+                            throwable -> view.showError(throwable));
                 },
                 throwable -> view.showError(throwable)
         );
@@ -73,6 +80,7 @@ public class MainPresenter {
 
     void logout() {
         preferencesUtil.clear();
+        SugarRecord.deleteAll(TransactionEntity.class);
         view.showLoginScreen();
     }
 
@@ -87,7 +95,18 @@ public class MainPresenter {
         });
     }
 
-    void onStop() {
+    void generateUserQR(){
+        generateQRInteractor.execute(
+                preferencesUtil.retrieveUsername(),
+                bitmap -> {
+                    view.showProfileQr(bitmap);
+                }
+                , throwable -> {
+                    view.showError(throwable);
+                });
+    }
+
+    void onDestroy() {
         view = null;
         setAccountDetails.unsubscribe();
         getAccountDetails.unsubscribe();

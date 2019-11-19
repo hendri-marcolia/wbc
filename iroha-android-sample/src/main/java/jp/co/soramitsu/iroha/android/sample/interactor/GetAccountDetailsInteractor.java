@@ -24,8 +24,6 @@ import jp.co.soramitsu.iroha.android.sample.injection.ApplicationModule;
 import jp.co.soramitsu.iroha.java.IrohaAPI;
 import jp.co.soramitsu.iroha.java.Query;
 
-import static jp.co.soramitsu.iroha.android.sample.Constants.DOMAIN_ID;
-import static jp.co.soramitsu.iroha.android.sample.Constants.QUERY_COUNTER;
 
 public class GetAccountDetailsInteractor extends SingleInteractor<String, Void> {
 
@@ -49,44 +47,19 @@ public class GetAccountDetailsInteractor extends SingleInteractor<String, Void> 
             try {
                 KeyPair userKeys = preferenceUtils.retrieveKeys();
                 String username = preferenceUtils.retrieveUsername();
-                String domain = DOMAIN_ID;
-                String USR = String.format("%s@%s",username,domain);
+                String domain = preferenceUtils.retrieveDomain();
+                String USR = String.format("%s@%s", username, domain);
                 IrohaAPI irohaAPI = getIrohaAPI();
-                Queries.Query q = Query.builder(USR, 1).getAccountDetail(USR,null,Constants.ACCOUNT_DETAILS,10,null,null).buildSigned(userKeys);
+                Queries.Query q = Query.builder(USR, currentTime, 1).getAccountDetail(USR, null, Constants.ACCOUNT_DETAILS, 10, null, null).buildSigned(userKeys);
                 QryResponses.AccountDetailResponse response = irohaAPI.query(q).getAccountDetailResponse();
-                JsonElement jsonElement = new Gson().fromJson(response.getDetail(), JsonObject.class).get(USR);
-                emitter.onSuccess(jsonElement != null ? jsonElement.getAsJsonObject().get(Constants.ACCOUNT_DETAILS).getAsString() : "");
-            }catch (Exception e){
+                if (response.getDetail().length() < 1) emitter.onSuccess("");
+                else {
+                    JsonElement jsonElement = new Gson().fromJson(response.getDetail(), JsonObject.class).get(USR);
+                    emitter.onSuccess(jsonElement != null ? jsonElement.getAsJsonObject().get(Constants.ACCOUNT_DETAILS).getAsString() : "");
+                }
+            } catch (Exception e) {
                 emitter.onError(new Throwable("Failed to get Account detail"));
             }
-//            Keypair userKeys = preferenceUtils.retrieveKeys();
-//            String username = preferenceUtils.retrieveUsername();
-//
-//            UnsignedQuery accountDetails = modelQueryBuilder.creatorAccountId(username + "@" + DOMAIN_ID)
-//                    .queryCounter(BigInteger.valueOf(QUERY_COUNTER))
-//                    .createdTime(BigInteger.valueOf(currentTime))
-//                    .getAccountDetail(username + "@" + DOMAIN_ID)
-//                    .build();
-//
-//            protoQueryHelper = new ModelProtoQuery(accountDetails);
-//            ByteVector queryBlob = protoQueryHelper.signAndAddSignature(userKeys).finish().blob();
-//            byte bquery[] = toByteArray(queryBlob);
-//
-//            Queries.Query protoQuery = null;
-//            try {
-//                protoQuery = Queries.Query.parseFrom(bquery);
-//            } catch (InvalidProtocolBufferException e) {
-//                emitter.onError(e);
-//            }
-//
-//            QueryServiceGrpc.QueryServiceBlockingStub queryStub = QueryServiceGrpc.newBlockingStub(channel);
-//            Responses.QueryResponse queryResponse = queryStub.find(protoQuery);
-//
-//            JsonElement jsonElement = new Gson().fromJson(queryResponse.getAccountDetailResponse().getDetail(), JsonObject.class).get(username + "@" + DOMAIN_ID);
-//            ;
-//            String detail = jsonElement != null ? jsonElement.getAsJsonObject().get(Constants.ACCOUNT_DETAILS).getAsString() : "";
-//
-//            emitter.onSuccess(detail);
         });
     }
 }

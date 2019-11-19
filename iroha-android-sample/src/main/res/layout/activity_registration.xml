@@ -38,12 +38,25 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/account_id_validator">
-
-                    <EditText
+                    <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/account_id_text"
-                        android:hint="@string/username_hint"/>
+                        android:weightSum="5"
+                        android:layout_height="wrap_content">
+                        <EditText
+                            android:layout_weight="4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/account_id_text"
+                            android:hint="@string/username_hint"/>
+                        <Button
+                            android:id="@+id/button_check_id"
+                            android:layout_weight="1"
+                            android:layout_width="80dp"
+                            android:layout_height="wrap_content"
+                            android:text="Check"/>
+                    </LinearLayout>
+
 
                 </com.google.android.material.textfield.TextInputLayout>
 

@@ -8,4 +8,6 @@ public class TransactionVM {
     public final String prettyDate;
     public final String username;
     public final String prettyAmount;
+    public final String transactionType;
+    public final String transactionStatus;
 }

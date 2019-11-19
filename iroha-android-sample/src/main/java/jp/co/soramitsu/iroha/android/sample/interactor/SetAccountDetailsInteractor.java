@@ -22,10 +22,8 @@ import jp.co.soramitsu.iroha.android.sample.PreferencesUtil;
 import jp.co.soramitsu.iroha.android.sample.injection.ApplicationModule;
 import jp.co.soramitsu.iroha.java.IrohaAPI;
 import jp.co.soramitsu.iroha.java.TransactionBuilder;
+import jp.co.soramitsu.iroha.java.TransactionStatusObserver;
 
-import static jp.co.soramitsu.iroha.android.sample.Constants.ACCOUNT_DETAILS;
-import static jp.co.soramitsu.iroha.android.sample.Constants.CONNECTION_TIMEOUT_SECONDS;
-import static jp.co.soramitsu.iroha.android.sample.Constants.DOMAIN_ID;
 
 public class SetAccountDetailsInteractor extends CompletableInteractor<String> {
 
@@ -48,22 +46,18 @@ public class SetAccountDetailsInteractor extends CompletableInteractor<String> {
             try {
                 KeyPair userKeys = preferenceUtils.retrieveKeys();
                 String username = preferenceUtils.retrieveUsername();
-                String domain = DOMAIN_ID;
+                String domain = preferenceUtils.retrieveDomain();
                 String USR = String.format("%s@%s",username,domain);
                 IrohaAPI irohaAPI = getIrohaAPI();
                 irohaAPI.transaction(
                         new TransactionBuilder(USR, new Date().getTime())
                                 .setAccountDetail(USR, Constants.ACCOUNT_DETAILS, details).sign(userKeys).build()
-                ).blockingSubscribe(toriiResponse -> {
-                            if (toriiResponse.getTxStatus() == Endpoint.TxStatus.COMMITTED ||
-                                    toriiResponse.getTxStatus() == Endpoint.TxStatus.STATELESS_VALIDATION_SUCCESS ||
-                                    toriiResponse.getTxStatus() == Endpoint.TxStatus.STATEFUL_VALIDATION_SUCCESS ||
-                                    toriiResponse.getTxStatus() == Endpoint.TxStatus.ENOUGH_SIGNATURES_COLLECTED){
-                                if (toriiResponse.getTxStatus() == Endpoint.TxStatus.COMMITTED )
-                                    emitter.onComplete();
-                            }
-                            else  emitter.onError(new RuntimeException("Transaction Failed , TxStatus = " + toriiResponse.getTxStatus()));
-                });
+                ).blockingSubscribe(
+                        TransactionStatusObserver.builder()
+                                .onTransactionCommitted(toriiResponse -> emitter.onComplete())
+                                .onError( throwable -> emitter.onError(throwable))
+                                .build()
+                );
             }catch (Exception e){
                 emitter.onError(new RuntimeException("Transaction failed"));
             }

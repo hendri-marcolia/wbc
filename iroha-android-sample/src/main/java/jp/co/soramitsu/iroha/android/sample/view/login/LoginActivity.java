@@ -1,11 +1,20 @@
 package jp.co.soramitsu.iroha.android.sample.view.login;
 
+import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,13 +22,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricPrompt;
 import androidx.databinding.DataBindingUtil;
 
+import java.util.List;
 import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
 
+import jp.co.soramitsu.iroha.android.sample.PreferencesUtil;
 import jp.co.soramitsu.iroha.android.sample.R;
 import jp.co.soramitsu.iroha.android.sample.SampleApplication;
 import jp.co.soramitsu.iroha.android.sample.databinding.ActivityLoginBinding;
+import jp.co.soramitsu.iroha.android.sample.qrscanner.QRScannerActivity;
 import jp.co.soramitsu.iroha.android.sample.view.main.MainActivity;
 import jp.co.soramitsu.iroha.android.sample.view.registration.RegistrationActivity;
 
@@ -32,9 +44,13 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
 
     private BiometricPrompt biometricPopup;
     private BiometricPrompt.PromptInfo biometricPopupBuilder;
-
+    private Context context;
+    public static final int REQUEST_CODE_QR_SCAN = 100;
     @Inject
     LoginPresenter presenter;
+
+    @Inject
+    PreferencesUtil preferencesUtil;
 
     private Handler handler = new Handler();
     private Executor executor = command -> handler.post(command);
@@ -42,7 +58,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        context = this;
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
 
         SampleApplication.instance.getApplicationComponent().inject(this);
@@ -106,6 +122,41 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
 
     @Override
     public void openRegistrationView() {
-        startActivity(new Intent(this, RegistrationActivity.class));
+        Dexter.withActivity(this)
+        .withPermissions(Manifest.permission.CAMERA,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                        if (report.areAllPermissionsGranted()) {
+
+                            Intent i = new Intent(context, QRScannerActivity.class);
+                            startActivityForResult(i, REQUEST_CODE_QR_SCAN);
+                        } else {
+                            Toast.makeText(context, "Permissions weren't granted", Toast.LENGTH_LONG);
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                }).check();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_CODE_QR_SCAN) {
+                if (data == null) {
+                    Toast.makeText(context, "QR invalid", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent intent = new Intent(this, RegistrationActivity.class);
+                    intent.putExtra("agentID", data.getData().toString());
+                    startActivity(intent);
+                }
+            }
+        }
     }
 }

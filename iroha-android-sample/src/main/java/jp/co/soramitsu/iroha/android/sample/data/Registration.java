@@ -37,5 +37,11 @@ public class Registration {
     @SerializedName("bank_account")
     private String bankAccount;
 
+    @Getter
+    @Setter
+    @SerializedName("agent_account_id")
+    private String agentID;
+
+
     public Registration() {}
 }

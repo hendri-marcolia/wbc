@@ -1,5 +1,7 @@
 package jp.co.soramitsu.iroha.android.sample.view.main;
 
+import android.graphics.Bitmap;
+
 interface MainView {
     void setUsername(String username);
 
@@ -15,7 +17,11 @@ interface MainView {
 
     void showError(Throwable throwable);
 
+    void showInfo(String info);
+
     void hideRefresh();
 
     void refreshData(boolean animate);
+
+    void showProfileQr(Bitmap bitmap);
 }
