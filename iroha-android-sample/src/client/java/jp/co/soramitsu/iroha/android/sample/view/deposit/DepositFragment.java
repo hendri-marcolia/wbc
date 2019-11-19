@@ -64,7 +64,7 @@ public class DepositFragment extends Fragment implements DepositView, OnBackPres
         RxView.clicks(binding.deposit)
                 .subscribe(view -> {
                     String amount = binding.amount.getText().toString().trim();
-                    if (amount.length() < 1 && Long.parseLong(amount) < 1)
+                    if (amount.length() < 1 || Long.parseLong(amount) < 1)
                         return;
                     InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(getView().getRootView().getWindowToken(), 0);

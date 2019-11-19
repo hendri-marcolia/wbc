@@ -86,7 +86,7 @@ public class ScanPresenter {
         this.generateQRInteractor.unsubscribe();
     }
 
-    List<TransactionOuterClass.Transaction> getPendingTransaction(Transaction transaction) {
+    void getPendingTransaction(Transaction transaction) {
         String accountId = transaction.getTransactionPayload().getPayload().getCustomerId();
         getPendingTransactionInteractor.execute(accountId, transactions -> {
             agentSignPendingTransactionInteractor.execute(transactions, o -> {
@@ -109,12 +109,10 @@ public class ScanPresenter {
                         fragment.showError(throwable);
                     });
         }, throwable -> {
-            if (throwable instanceof EmptyStackException)
-                fragment.getPendingTransaction(transaction);
+            if (throwable instanceof EmptyStackException);
             else
                 fragment.showError(throwable);
         });
-        return null;
     }
 
     boolean validateTransaction(Transaction transaction, boolean validateAgent) throws Throwable {

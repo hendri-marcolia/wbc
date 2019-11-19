@@ -196,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements MainView, SwipeRe
     @Override
     public void showError(Throwable throwable) {
         hideRefresh();
+        hideProgress();
         AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.error_dialog_title))
                 .setMessage(
@@ -216,6 +217,7 @@ public class MainActivity extends AppCompatActivity implements MainView, SwipeRe
     @Override
     public void showInfo(String info) {
         hideRefresh();
+        hideProgress();
         AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.info_dialog_title))
                 .setMessage(

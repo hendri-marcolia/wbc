@@ -75,7 +75,8 @@ public class AgentSignPendingTransactionInteractor extends ObservableInteractor<
                             .subscribe(
                                     TransactionStatusObserver.builder()
                                     .onMstPending(toriiResponse -> {
-                                        emitter.onNext(toriiResponse);
+                                        if (txCount.incrementAndGet() == transactions.size())
+                                            emitter.onNext(toriiResponse);
                                     })
                                     .onTransactionCommitted(toriiResponse -> {
                                         emitter.onComplete();

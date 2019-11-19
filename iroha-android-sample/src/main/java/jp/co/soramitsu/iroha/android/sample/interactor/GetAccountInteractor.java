@@ -51,7 +51,7 @@ public class GetAccountInteractor extends SingleInteractor<QryResponses.Account,
                 Queries.Query q = Query.builder(USR, currentTime, 1).getAccount(USR).buildSigned(userKeys);
                 QryResponses.AccountResponse response = irohaAPI.query(q).getAccountResponse();
                 Log.d(USR, "Has account: " + response.hasAccount());
-
+                irohaAPI.terminate();
                 if (response.hasAccount()){
                     emitter.onSuccess(response.getAccount());
                 }

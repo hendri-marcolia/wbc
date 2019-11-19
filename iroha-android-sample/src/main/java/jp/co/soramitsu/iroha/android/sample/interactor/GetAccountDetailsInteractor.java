@@ -52,6 +52,7 @@ public class GetAccountDetailsInteractor extends SingleInteractor<String, Void> 
                 IrohaAPI irohaAPI = getIrohaAPI();
                 Queries.Query q = Query.builder(USR, currentTime, 1).getAccountDetail(USR, null, Constants.ACCOUNT_DETAILS, 10, null, null).buildSigned(userKeys);
                 QryResponses.AccountDetailResponse response = irohaAPI.query(q).getAccountDetailResponse();
+                irohaAPI.terminate();
                 if (response.getDetail().length() < 1) emitter.onSuccess("");
                 else {
                     JsonElement jsonElement = new Gson().fromJson(response.getDetail(), JsonObject.class).get(USR);

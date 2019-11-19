@@ -45,6 +45,7 @@ public class GetAccountBalanceInteractor extends SingleInteractor<Long, Void> {
                         .getAccountAssets(USR)
                         .buildSigned(userKeys));
                 try {
+                    api.terminate();
                     if (resp.getAccountAssetsResponse().getAccountAssetsCount() < 1) {
                         emitter.onSuccess(0l);
                     } else {

@@ -98,26 +98,17 @@ public class ScanFragment extends Fragment implements ScanView, OnBackPressed {
         binding.bottomSheet.setVisibility(View.VISIBLE);
         binding.screenBlocker.setVisibility(View.VISIBLE);
         binding.confAmount.setText("Transaction : " + (transaction.getTransactionType() == Transaction.TransactionType.ONLINE ? "Online" : "Offline"));
-        binding.saveTx.setVisibility((transaction.getTransactionType() == Transaction.TransactionType.ONLINE ? View.INVISIBLE : View.VISIBLE));
+        binding.saveTx.setVisibility(View.VISIBLE);
         binding.saveTx.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Save pending tx here ( we only need userID)
-                //new TransactionEntity(new Gson().toJson(transaction), false, false).save();
+                new TransactionEntity(new Gson().toJson(transaction), false, transaction.getTransactionType() == Transaction.TransactionType.ONLINE).save();
                 hideBottomSheet();
             }
         });
         BottomSheetBehavior.from(binding.bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
-        getPendingTransaction(transaction);
-    }
 
-    public void getPendingTransaction(Transaction transaction) {
-        rHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                presenter.getPendingTransaction(transaction);
-            }
-        }, 5000);
     }
 
     @Override
@@ -172,34 +163,6 @@ public class ScanFragment extends Fragment implements ScanView, OnBackPressed {
                             showError(e);
                         }
 
-//                        transaction.setAgentId("agent1@test6");
-//                        transaction.setAgentPublicKey(
-//                               MyUtils.bytesToString(MyUtils.hexToBytes("a05154253901769b97036883020546540298d6a6fb453e54b0404fe5c49a1cfa"))
-//                        );
-//                        transaction.setAgentSinging(
-//                                MyUtils.bytesToString(
-//                                MyUtils.sign(transaction.getTransactionPayload(),
-//                                       MyUtils.keyPairFromPrivate(MyUtils.privateKeyFromString("78356528af93e4b03cad19ec0ee44a45c41e68375789a827cd93f911b57b6a9b"))
-//                                ))
-//                        );
-//                        transaction.setTransactionType(Transaction.TransactionType.ONLINE);
-//                        if(presenter.validateTransaction(transaction)){
-//                            switch (transaction.getTransactionType()){
-//                                case ONLINE:
-//                                    presenter.doDepositOnline(transaction,
-//                                            new Runnable() {
-//                                                @Override
-//                                                public void run() {
-//                                                    hideBottomSheet();
-//                                                }
-//                                            });
-//                                    break;
-//                                case OFFLINE:
-//                                    break;
-//                            }
-//                        }else {
-//                            showError(new Throwable("Unknown Error while validating the Transaction"));
-//                        }
 
                     } catch (Throwable e) {
                         showError(e);
