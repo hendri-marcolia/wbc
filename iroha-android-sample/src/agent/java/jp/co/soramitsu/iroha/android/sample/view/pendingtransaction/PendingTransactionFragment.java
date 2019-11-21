@@ -22,8 +22,8 @@ import jp.co.soramitsu.iroha.android.sample.adapter.PendingTransactionAdapter;
 import jp.co.soramitsu.iroha.android.sample.data.PendingTransaction;
 import jp.co.soramitsu.iroha.android.sample.databinding.FragmentPendingTransactionBinding;
 import jp.co.soramitsu.iroha.android.sample.fragmentinterface.OnBackPressed;
-import jp.co.soramitsu.iroha.android.sample.interactor.deposit.AgentPerformSaveOnlineInteractor;
-import jp.co.soramitsu.iroha.android.sample.interactor.deposit.AgentSignPendingTransactionInteractor;
+import jp.co.soramitsu.iroha.android.sample.interactor.basicsavingaction.AgentPerformSaveOnlineInteractor;
+import jp.co.soramitsu.iroha.android.sample.interactor.basicsavingaction.AgentSignPendingTransactionInteractor;
 import jp.co.soramitsu.iroha.android.sample.view.main.MainActivity;
 
 public class PendingTransactionFragment extends Fragment implements PendingTransactionView, OnBackPressed {

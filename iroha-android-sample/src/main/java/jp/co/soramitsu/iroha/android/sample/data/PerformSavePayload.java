@@ -30,4 +30,9 @@ public class PerformSavePayload {
     @Getter
     @SerializedName("amount")
     private String amount;
+
+    // Should use ignore strategy here
+    @Setter
+    @Getter
+    private Payload.PayloadType actionType;
 }

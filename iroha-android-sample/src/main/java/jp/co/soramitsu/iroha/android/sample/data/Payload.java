@@ -9,6 +9,11 @@ import lombok.Getter;
 
 @EqualsAndHashCode
 public class Payload {
+    public enum PayloadType {
+        DEPOSIT,
+        WITHDRAW
+    }
+
     @Getter
     @SerializedName("p1")
     String txId;
@@ -20,12 +25,16 @@ public class Payload {
     String customerId;
     @Getter
     @SerializedName("p4")
+    PayloadType type;
+    @Getter
+    @SerializedName("p5")
     Long timestamp;
 
-    public Payload(Long amount, String customerId) {
+    public Payload(Long amount, String customerId, PayloadType type) {
         this.txId = UUID.randomUUID().toString();
         this.amount = amount;
         this.customerId = customerId;
         this.timestamp = System.currentTimeMillis();
+        this.type = type;
     }
 }

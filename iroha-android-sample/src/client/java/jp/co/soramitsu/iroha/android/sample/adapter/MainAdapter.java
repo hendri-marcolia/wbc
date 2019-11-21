@@ -17,7 +17,9 @@ public class MainAdapter extends FragmentPagerAdapter {
         super(manager);
         fragmentMap.put(0, new DepositFragment());
         fragmentMap.put(1, new WithdrawFragment());
-        fragmentMap.put(2, new HistoryFragment());
+        fragmentMap.put(2, new Fragment());
+        fragmentMap.put(3, new Fragment());
+        fragmentMap.put(4, new HistoryFragment());
     }
 
     @Override
@@ -27,7 +29,7 @@ public class MainAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return 5;
     }
 
     @Override
@@ -36,7 +38,11 @@ public class MainAdapter extends FragmentPagerAdapter {
             return "DEPOSIT";
         } else if (position == 1) {
             return "WITHDRAW";
-        } else {
+        } else if(position == 2){
+            return "PAYMENT";
+        }else if(position == 3){
+            return "TRANSFER";
+        }else {
             return "HISTORY";
         }
     }

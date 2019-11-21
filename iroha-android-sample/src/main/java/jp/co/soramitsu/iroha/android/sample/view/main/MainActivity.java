@@ -60,6 +60,11 @@ public class MainActivity extends AppCompatActivity implements MainView, SwipeRe
         SampleApplication.instance.getApplicationComponent().inject(this);
         presenter.setView(this);
 
+        // TODO : dirty hack for hide amount at agent flavour
+        if (BuildConfig.FLAVOR.equals("agent")){
+            binding.balance.setVisibility(View.GONE);
+        }
+
         //refresh layout
         swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);

@@ -26,4 +26,8 @@ public interface WbcApi {
 
     @POST("perform_save_offline")
     Single<HttpResult> performSaveOffline(@Body Transaction transactionPayload);
+
+
+    @POST("perform_withdraw")
+    Single<HttpResult> performWithdraw(@Body PerformSavePayload payload);
 }

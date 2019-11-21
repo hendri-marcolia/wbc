@@ -14,12 +14,13 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import jp.co.soramitsu.iroha.android.sample.R;
+import jp.co.soramitsu.iroha.android.sample.data.Payload;
 import jp.co.soramitsu.iroha.android.sample.data.PendingTransaction;
 import jp.co.soramitsu.iroha.android.sample.data.PerformSavePayload;
 import jp.co.soramitsu.iroha.android.sample.data.Transaction;
 import jp.co.soramitsu.iroha.android.sample.entity.TransactionEntity;
-import jp.co.soramitsu.iroha.android.sample.interactor.deposit.AgentPerformSaveOnlineInteractor;
-import jp.co.soramitsu.iroha.android.sample.interactor.deposit.AgentSignPendingTransactionInteractor;
+import jp.co.soramitsu.iroha.android.sample.interactor.basicsavingaction.AgentPerformSaveOnlineInteractor;
+import jp.co.soramitsu.iroha.android.sample.interactor.basicsavingaction.AgentSignPendingTransactionInteractor;
 import jp.co.soramitsu.iroha.android.sample.view.pendingtransaction.PendingTransactionPresenter;
 import lombok.Getter;
 import lombok.Setter;
@@ -58,6 +59,7 @@ public class PendingTransactionAdapter extends RecyclerView.Adapter<PendingTrans
         Transaction tPayload = new Gson().fromJson(pendingTransaction.getTransactionEntity().getTransactionPayload(), Transaction.class);
         holder.textViewName.setText(tPayload.getTransactionPayload().getPayload().getCustomerId());
         holder.textViewAmount.setText(""+tPayload.getTransactionPayload().getPayload().getAmount());
+        holder.textViewAction.setText(tPayload.getTransactionPayload().getPayload().getType() == Payload.PayloadType.DEPOSIT ? "DEPOSIT" : "WITHDRAW");
         holder.btnSign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -71,6 +73,7 @@ public class PendingTransactionAdapter extends RecyclerView.Adapter<PendingTrans
                             payload.setAgentPublicKey(tPayload.getAgentPublicKey());
                             payload.setAccountId(tPayload.getTransactionPayload().getPayload().getCustomerId());
                             payload.setAccountPublicKey(tPayload.getAgentPublicKey());
+                            payload.setActionType(tPayload.getTransactionPayload().getPayload().getType());
                             interactor.execute(payload, httpResult -> {
 
                             }, throwable -> {
@@ -99,11 +102,13 @@ public class PendingTransactionAdapter extends RecyclerView.Adapter<PendingTrans
         // each data item is just a string in this case
         public TextView textViewName;
         public TextView textViewAmount;
+        public TextView textViewAction;
         public Button btnSign;
         public PendingTransactionVH(View v) {
             super(v);
             textViewName = v.findViewById(R.id.username);
             textViewAmount = v.findViewById(R.id.amount);
+            textViewAction = v.findViewById(R.id.actionType);
             btnSign = v.findViewById(R.id.btnSign);
         }
     }

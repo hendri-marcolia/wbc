@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import jp.co.soramitsu.iroha.android.sample.BuildConfig;
 import jp.co.soramitsu.iroha.android.sample.data.Transaction;
 import jp.co.soramitsu.iroha.android.sample.entity.TransactionEntity;
 import jp.co.soramitsu.iroha.android.sample.interactor.GetAccountTransactionsInteractor;
@@ -104,14 +105,17 @@ public class HistoryPresenter {
                 if (diffInMinutes == 0) {
                     prettyDate = "just now";
                 } else {
-                    prettyDate = diffInMinutes + " minutes ago";
+                    if (diffInMinutes >= 60){
+                        prettyDate = diffInMinutes / 60 + " hours and ";
+                    }else prettyDate = "";
+                    prettyDate += diffInMinutes  % 60 + " minutes ago";
                 }
             } else {
                 prettyDate = hoursDateFormat.format(txDate);
             }
 
 
-            TransactionVM vm = new TransactionVM(transactionEntity.getId(), prettyDate, transaction.getAgentId(), prettyAmount, transaction.getTransactionType().name(), transactionEntity.isCommited() ? "SYNCED" : "Waiting");
+            TransactionVM vm = new TransactionVM(transactionEntity.getId(), prettyDate,  (BuildConfig.FLAVOR.equals("agent") ? transaction.getTransactionPayload().getPayload().getCustomerId() :transaction.getAgentId()) , prettyAmount, transaction.getTransactionType().name(), transaction.getTransactionPayload().getPayload().getType(), transactionEntity.isCommited() ? "SYNCED" : "Waiting");
 
             listItems.add(vm);
         }
@@ -133,8 +137,8 @@ public class HistoryPresenter {
         getAccountTransactionsInteractor.unsubscribe();
     }
 
-    public void successSync(){
-        fragment.successSync();
+    public void successSync(String msg){
+        fragment.successSync(msg);
     }
 
     public void showInfo(String msg) {
@@ -144,4 +148,10 @@ public class HistoryPresenter {
     public void showError(Throwable throwable){
         fragment.showError(throwable);
     }
+
+    public void showLoading(){fragment.showLoading();}
+
+    public void hideLoading(){ fragment.hideLoading();}
+
+
 }

@@ -2,23 +2,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="#F64639"
     tools:context="jp.co.soramitsu.iroha.android.sample.view.main.SplashScreenActivity">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
          TextureView, etc. -->
-    <TextView
-        android:id="@+id/fullscreen_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:keepScreenOn="true"
-        android:text="WBC Branchless Banking"
-        android:textColor="#FF2D2D"
-        android:textSize="50sp"
-        android:textStyle="bold" />
-
+<!--    <TextView-->
+<!--        android:id="@+id/fullscreen_content"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:gravity="center"-->
+<!--        android:keepScreenOn="true"-->
+<!--        android:text="WBC Branchless Banking"-->
+<!--        android:textColor="#FF2D2D"-->
+<!--        android:textSize="50sp"-->
+<!--        android:textStyle="bold" />-->
+        <ImageView
+            android:src="@drawable/qiubit_high_res"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
 
