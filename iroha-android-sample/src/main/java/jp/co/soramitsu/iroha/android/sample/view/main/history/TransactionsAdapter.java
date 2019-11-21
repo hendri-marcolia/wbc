@@ -14,13 +14,12 @@ import com.orm.SugarRecord;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import jp.co.soramitsu.iroha.android.sample.R;
 import jp.co.soramitsu.iroha.android.sample.SampleApplication;
+import jp.co.soramitsu.iroha.android.sample.data.Payload;
 import jp.co.soramitsu.iroha.android.sample.data.Transaction;
 import jp.co.soramitsu.iroha.android.sample.entity.TransactionEntity;
-import jp.co.soramitsu.iroha.android.sample.interactor.deposit.PerformSaveOfflineInteractor;
+import jp.co.soramitsu.iroha.android.sample.interactor.basicsavingaction.PerformSaveOfflineInteractor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -72,20 +71,22 @@ public class TransactionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     @Override
                     public void onClick(View view) {
                         TransactionEntity entity = SugarRecord.findById(TransactionEntity.class, transaction.id);
+                        presenter.showLoading();
                         performSaveOfflineInteractor.execute(new Gson().fromJson(entity.getTransactionPayload(), Transaction.class), httpResult -> {
                             entity.setCommited(true);
                             entity.save();
-                            presenter.successSync();
+                            presenter.hideLoading();
                             presenter.getTransactions();
+                            presenter.successSync(httpResult.getMessage());
                         }, throwable -> {
                             presenter.showError(throwable);
                         });
                     }
                 });
             }else transactionItem.syncButton.setVisibility(View.GONE);
-            if (transaction.prettyAmount.contains("-")) {
-                transactionItem.amount.setText("- " + transaction.prettyAmount.substring(1, transaction.prettyAmount.length()));
-                transactionItem.amount.setTextColor(SampleApplication.instance.getResources().getColor(R.color.text));
+            if (transaction.actionType == Payload.PayloadType.WITHDRAW) {
+                transactionItem.amount.setText("- " + transaction.prettyAmount);
+                transactionItem.amount.setTextColor(SampleApplication.instance.getResources().getColor(R.color.negativeAmount));
             } else {
                 transactionItem.amount.setText("+ " + transaction.prettyAmount);
                 transactionItem.amount.setTextColor(SampleApplication.instance.getResources().getColor(R.color.positiveAmount));

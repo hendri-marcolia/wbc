@@ -12,13 +12,12 @@ import jp.co.soramitsu.crypto.ed25519.Ed25519Sha3;
 import jp.co.soramitsu.iroha.android.sample.MyUtils;
 import jp.co.soramitsu.iroha.android.sample.PreferencesUtil;
 import jp.co.soramitsu.iroha.android.sample.data.Payload;
-import jp.co.soramitsu.iroha.android.sample.data.PerformSavePayload;
 import jp.co.soramitsu.iroha.android.sample.data.Transaction;
 import jp.co.soramitsu.iroha.android.sample.fragmentinterface.InteractorListener;
 import jp.co.soramitsu.iroha.android.sample.interactor.GenerateTransactionQRInteractor;
-import jp.co.soramitsu.iroha.android.sample.interactor.deposit.AddSignatoryInteractor;
-import jp.co.soramitsu.iroha.android.sample.interactor.deposit.CreateDepositTransactionInteractor;
-import jp.co.soramitsu.iroha.android.sample.interactor.deposit.PerformSaveOfflineInteractor;
+import jp.co.soramitsu.iroha.android.sample.interactor.basicsavingaction.AddSignatoryInteractor;
+import jp.co.soramitsu.iroha.android.sample.interactor.basicsavingaction.CreateDepositTransactionInteractor;
+import jp.co.soramitsu.iroha.android.sample.interactor.basicsavingaction.PerformSaveOfflineInteractor;
 import jp.co.soramitsu.iroha.android.sample.qrscanner.QRScannerActivity;
 import lombok.Setter;
 
@@ -50,7 +49,7 @@ public class DepositPresenter {
     }
 
     void showQR(Long amount) {
-        Payload payload = new Payload(amount, preferencesUtil.retrieveUsername());
+        Payload payload = new Payload(amount, preferencesUtil.retrieveUsername(), Payload.PayloadType.DEPOSIT);
         KeyPair keyPair = preferencesUtil.retrieveKeys();
         byte[] sign = MyUtils.sign(payload, keyPair);
         lastTransaction = new Transaction(payload, MyUtils.bytesToString(keyPair.getPublic().getEncoded()), MyUtils.bytesToString(sign));

@@ -94,10 +94,11 @@ public class RegistrationPresenter {
             result = false;
         }
 
-        if (bankAccount.isEmpty()) {
-            view.setBankAccountValidation(false);
-            result = false;
-        }
+        //Bank account will be optional for now
+//        if (bankAccount.isEmpty()) {
+//            view.setBankAccountValidation(false);
+//            result = false;
+//        }
 
         if (result) {
 
@@ -108,7 +109,7 @@ public class RegistrationPresenter {
                     Registration registration = new Registration();
                     registration.setAccountId(accountId);
                     registration.setFullName(fullName);
-                    registration.setBankAccount(bankAccount);
+                    registration.setBankAccount(bankAccount.isEmpty() ? "" : bankAccount);
                     registration.setKtp(ktp);
                     registration.setFcmId("");
                     registration.setAccountPublicKey(Utils.toHex(keyPair.getPublic().getEncoded()));

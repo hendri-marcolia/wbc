@@ -97,7 +97,11 @@ public class ScanFragment extends Fragment implements ScanView, OnBackPressed {
         binding.qrCodeImageView.setImageBitmap(bitmap);
         binding.bottomSheet.setVisibility(View.VISIBLE);
         binding.screenBlocker.setVisibility(View.VISIBLE);
-        binding.confAmount.setText("Transaction : " + (transaction.getTransactionType() == Transaction.TransactionType.ONLINE ? "Online" : "Offline"));
+        if (transaction.getTransactionPayload().getPayload().getType() == Payload.PayloadType.DEPOSIT)
+            binding.confAmount.setText("Transaction : " + (transaction.getTransactionType() == Transaction.TransactionType.ONLINE ? "Online" : "Offline"));
+        else
+            binding.confAmount.setText("Transaction : Withdraw");
+
         binding.saveTx.setVisibility(View.VISIBLE);
         binding.saveTx.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,7 +140,11 @@ public class ScanFragment extends Fragment implements ScanView, OnBackPressed {
                             if(presenter.validateTransaction(transaction, false)){
                                 transactionTypeId = 0;
                                 Payload payload = transaction.getTransactionPayload().getPayload();
-                                String transactionType[] = new String[]{"Online", "Offline"};
+                                String transactionType[];
+                                if (payload.getType() == Payload.PayloadType.DEPOSIT)
+                                    transactionType= new String[]{"Online", "Offline"};
+                                else
+                                    transactionType= new String[]{"Online"};
                                 AlertDialog dialog = new AlertDialog.Builder(getActivity())
                                         .setTitle("Transaction Amount : " + payload.getAmount() + "\nCustomer ID : " + payload.getCustomerId())
                                         .setSingleChoiceItems(transactionType, 0, new DialogInterface.OnClickListener() {

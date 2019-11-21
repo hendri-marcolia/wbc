@@ -26,12 +26,6 @@ public class Transaction implements Cloneable {
         @SerializedName("tp3")
         String customerSigning;
 
-        TransactionPayload(Long amount, String customerId, String customerPublicKey, String customerSigning) {
-            this.payload = new Payload(amount, customerId);
-            this.customerPublicKey = customerPublicKey;
-            this.customerSigning = customerSigning;
-        }
-
         TransactionPayload(Payload payload, String customerPublicKey, String customerSigning){
             this.payload = payload;
             this.customerPublicKey = customerPublicKey;
@@ -43,9 +37,6 @@ public class Transaction implements Cloneable {
     @SerializedName("t1")
     TransactionPayload transactionPayload;
 
-    public Transaction(Long amount, String customerId, String customerPublicKey, String customerSigning) {
-        this.transactionPayload = new TransactionPayload(amount, customerId, customerPublicKey, customerSigning);
-    }
 
     public Transaction(Payload payload, String customerPublicKey, String customerSigning) {
         this.transactionPayload = new TransactionPayload(payload, customerPublicKey, customerSigning);

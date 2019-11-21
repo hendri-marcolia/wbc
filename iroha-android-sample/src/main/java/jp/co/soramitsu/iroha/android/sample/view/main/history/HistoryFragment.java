@@ -17,7 +17,7 @@ import javax.inject.Inject;
 import jp.co.soramitsu.iroha.android.sample.R;
 import jp.co.soramitsu.iroha.android.sample.SampleApplication;
 import jp.co.soramitsu.iroha.android.sample.databinding.FragmentHistoryBinding;
-import jp.co.soramitsu.iroha.android.sample.interactor.deposit.PerformSaveOfflineInteractor;
+import jp.co.soramitsu.iroha.android.sample.interactor.basicsavingaction.PerformSaveOfflineInteractor;
 import jp.co.soramitsu.iroha.android.sample.view.main.MainActivity;
 
 public class HistoryFragment extends Fragment implements HistoryView {
@@ -63,9 +63,9 @@ public class HistoryFragment extends Fragment implements HistoryView {
         binding.transactions.setAdapter(adapter);
     }
 
-    public void successSync(){
-        ((MainActivity)getActivity()).showInfo("Success sync Transaction");
+    public void successSync(String msg){
         ((MainActivity)getActivity()).refreshData(false);
+        ((MainActivity)getActivity()).showInfo("Success sync Transaction, " +msg);
     }
 
     @Override
@@ -106,6 +106,16 @@ public class HistoryFragment extends Fragment implements HistoryView {
         ((MainActivity) getActivity()).showError(error);
     }
 
+
+
+    public void showLoading() {
+        ((MainActivity) getActivity()).showProgress();
+    }
+
+
+    public void hideLoading() {
+        ((MainActivity) getActivity()).hideProgress();
+    }
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
