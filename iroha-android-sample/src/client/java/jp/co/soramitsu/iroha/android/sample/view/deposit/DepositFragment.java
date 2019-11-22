@@ -165,26 +165,26 @@ public class DepositFragment extends Fragment implements DepositView, OnBackPres
                                     Long txId = new TransactionEntity(new Gson().toJson(transaction), false, false).save();
                                     showInfo("Transaction success, The transaction will be synced when there is Internet connection available");
                                     hideBottomSheet();
-                                    presenter.doDepositOffline(transaction, new InteractorListener() {
-                                        @Override
-                                        public void onNext(Object object) {
-
-                                        }
-
-                                        @Override
-                                        public void onComplete(Object o) {
-                                            showInfo("Transaction synced");
-                                            ((MainActivity) getActivity()).refreshData(false);
-                                            TransactionEntity tx = SugarRecord.findById(TransactionEntity.class, txId);
-                                            tx.setCommited(true);
-                                            tx.save();
-                                        }
-
-                                        @Override
-                                        public void onError(Throwable throwable) {
-                                            showError(throwable);
-                                        }
-                                    });
+//                                    presenter.doDepositOffline(transaction, new InteractorListener() {
+//                                        @Override
+//                                        public void onNext(Object object) {
+//
+//                                        }
+//
+//                                        @Override
+//                                        public void onComplete(Object o) {
+//                                            showInfo("Transaction synced");
+//                                            ((MainActivity) getActivity()).refreshData(false);
+//                                            TransactionEntity tx = SugarRecord.findById(TransactionEntity.class, txId);
+//                                            tx.setCommited(true);
+//                                            tx.save();
+//                                        }
+//
+//                                        @Override
+//                                        public void onError(Throwable throwable) {
+//                                            showError(throwable);
+//                                        }
+//                                    });
                                     break;
                             }
                         }else {

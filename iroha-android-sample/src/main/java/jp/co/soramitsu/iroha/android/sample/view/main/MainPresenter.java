@@ -60,7 +60,10 @@ public class MainPresenter {
                                 view.setAccountDetails(details);
                                 view.hideRefresh();
                             },
-                            throwable -> view.showError(throwable)
+                            throwable -> {
+                                //view.showError(throwable);
+                                view.hideRefresh();
+                            }
                     );
                     getAccountBalanceInteractor.execute(
                             balance -> {
@@ -70,9 +73,17 @@ public class MainPresenter {
                                 view.setAccountBalance(MyUtils.formatIDR(balance));
                                 SampleApplication.instance.account.setBalance(balance);
                             },
-                            throwable -> view.showError(throwable));
+                            throwable -> {
+                                view.setAccountBalance(MyUtils.formatIDR(0l));
+                                SampleApplication.instance.account.setBalance(0);
+                                view.hideRefresh();
+                                //view.showError(throwable);
+                            });
                 },
-                throwable -> view.showError(throwable)
+                throwable -> {
+                    //view.showError(throwable);
+                    view.hideRefresh();
+                }
         );
 
 
